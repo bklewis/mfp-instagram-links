@@ -1,6 +1,5 @@
-/**
- * Created by brycelewis on 6/18/15.
- */
+package mfp.platform.services.instagramlinks
+
 case class InstagramLink (linkId: String,
                          url: String,
                          hashtag: String,
