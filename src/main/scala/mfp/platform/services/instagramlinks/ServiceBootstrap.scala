@@ -1,21 +1,9 @@
-import akka.actor.Props
-import mfp.platform.db.DatabaseProvider
-import mfp.platform.services.HttpServer
-
-import mfp.platform.db.DatabaseProvider
-import scala.slick.driver.H2Driver.simple._
-import scala.slick.jdbc.StaticQuery.interpolation
-import scala.slick.jdbc.GetResult
-import scala.slick.driver.JdbcDriver.backend.Database
-
-import java.sql.DriverManager
-import java.sql.Connection
-
+package mfp.platform.services.instagramlinks
 
 object ScalaJdbcConnectSelect extends App{
 
   override def main(args: Array[String]): Unit = {
-    import java.sql.{Connection, DriverManager, ResultSet};
+    import java.sql.{DriverManager, ResultSet}
 
     // Change to Your Database Config
     val conn_str = "jdbc:mysql://localhost:8889/ig_links?user=blewis&password=testdb"
@@ -87,9 +75,6 @@ object ScalaJdbcConnectSelect extends App{
 
 
 object ServiceBootstrap  {
-
-  import mfp.platform.db.{DbConfig, PooledDatabaseProvider}
-  import mfp.platform.services.SprayServiceActor
 
 }
 

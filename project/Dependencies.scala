@@ -1,5 +1,7 @@
 import sbt._
 
+//MVN Repository
+
 object Dependencies {
 
   import Versions._
@@ -23,7 +25,8 @@ object Dependencies {
     "org.specs2"          %%  "specs2-core"              % "2.3.10"    % "test",
     "mysql"               %   "mysql-connector-java"     % "5.1.30",
     "c3p0"                %   "c3p0"                     % "0.9.1.2",
-    "com.typesafe.slick"  %%  "slick"                    % "2.0.2"
+    "com.typesafe.slick"  %%  "slick"                    % "2.0.2",
+    "joda-time"           %   "joda-time"                % "2.8.1"
   )
 
 }
