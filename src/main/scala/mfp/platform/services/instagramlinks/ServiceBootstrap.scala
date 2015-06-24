@@ -1,5 +1,6 @@
 package mfp.platform.services.instagramlinks
 
+import mfp.platform.db.{DbConfig, PooledDatabaseProvider}
 
 
 object ServiceBootstrap extends App {
@@ -8,11 +9,17 @@ object ServiceBootstrap extends App {
 
   println("Hello, world!")
 
-  implicit val db = Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb")
+  val dbProvider = new DefaultDatabases with PooledDatabaseProvider with DbConfig
+  //Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb")
 
-  var igLinksDAO = new DefaultIgLinksDAO
-  var hashtagsDAO = new DefaultHashtagsDAO
-  var bannedUsersDAO = new DefaultBannedUsersDAO
+  implicit val db = dbProvider.igLinksDb
+
+  var iDao = new DefaultIgLinksDAO
+  var hDao = new DefaultHashtagsDAO
+  var bDao = new DefaultBannedUsersDAO
+
+  var count = iDao.countAllIgLinks
+  println(count)
 
   println("Farewell, world!")
 }
