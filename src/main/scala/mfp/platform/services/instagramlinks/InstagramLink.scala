@@ -2,7 +2,7 @@ package mfp.platform.services.instagramlinks
 
 import java.sql.Timestamp
 
-case class InstagramLink (id: Int = -1,
+case class InstagramLink (id: Int,
                          url: String,
                          hashtagId: Int,
                          igUsername: String,

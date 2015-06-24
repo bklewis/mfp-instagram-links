@@ -6,10 +6,9 @@ object ServiceBootstrap extends App {
 
   import scala.slick.driver.H2Driver.simple._
 
-  implicit val db = Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb", driver = "org.h2.Driver") withSession {
-    implicit session =>
+  implicit val db = Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb", driver = "org.h2.Driver")
 
-  }
+
 
 }
 
