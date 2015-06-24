@@ -6,10 +6,15 @@ object ServiceBootstrap extends App {
 
   import scala.slick.driver.H2Driver.simple._
 
+  println("Hello, world!")
+
   implicit val db = Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb", driver = "org.h2.Driver")
 
+  var igLinksDAO = new DefaultIgLinksDAO
+  var hashtagsDAO = new DefaultHashtagsDAO
+  var bannedUsersDAO = new DefaultBannedUsersDAO
 
-
+  println("Farewell, world!")
 }
 
 
