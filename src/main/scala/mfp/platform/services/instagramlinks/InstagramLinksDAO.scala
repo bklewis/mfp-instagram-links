@@ -6,60 +6,48 @@ import slick.jdbc.{StaticQuery => Q, GetResult}
 
 trait InstagramLinksDAO {
 
-
+  val table = "ig_links"
   val columns = "id, url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
   val columnsNoId = "url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
 
   //[Admin]
-  //Post new link to table
   def addNewIgLink(igLink: InstagramLink)(implicit db: Database): Int
 
   //[Admin]
-  //Update link in database
   def updatedIgLinkById(igLink: InstagramLink)(implicit db: Database): Unit
 
   //[Admin]
-  //Get all links
   def allIgLinks(implicit db: Database): Seq[InstagramLink]
 
   //[Admin]
-  //Get link by id
   def igLinkById(id: Int)(implicit db: Database): InstagramLink
 
   //[Demo/Admin]
-  //Get a list of approved links by hashtag
   def igLinksByHashtagApproved(hashtag: String)(implicit db: Database): Seq[InstagramLink]
 
   //[Admin]
-  //Get a list of all links by hashtag
   def igLinksByHashtagAll(hashtag: String)(implicit db: Database): Seq[InstagramLink]
 
   //[Admin]
-  //Get a list of banned links by hashtag
   def igLinksByHashtagBanned(hashtag: String)(implicit db: Database): Seq[InstagramLink]
 
   //[Admin]
-  //Count the total number of links
   def countAllIgLinks(implicit db: Database): Int
 
   //[Admin]
-  //Count the number of links by hashtag
   def countIgLinksByHashtag(hashtag:String)(implicit db: Database): Int
 
   //[Admin]
-  //Count the number of banned links by reason by hashtag
   def countBannedIgLinksByHashtag(hashtag:String)(implicit db: Database): Int
 
 }
 
 class DefaultIgLinksDAO extends InstagramLinksDAO {
 
-  //[Admin]
-  //Post new link to table
   def addNewIgLink(igLink: InstagramLink)(implicit db: Database): Int = {
     db.withSession(
     implicit session =>
-      (Q.u + "INSERT INTO ig_links (" +? columnsNoId +? ") VALUES ("
+      (Q.u + "INSERT INTO " + table + " (" +? columnsNoId +? ") VALUES ("
         +? igLink.url +? ", "
         +? igLink.hashtagId +? ", "
         +? igLink.igUsername +? ", "
@@ -74,12 +62,10 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
     )
   }
 
-  //[Admin]
-  //Update link in database
   def updatedIgLinkById(igLink: InstagramLink)(implicit db: Database): Unit = {
     db.withSession(
       implicit session =>
-        (Q.u + "UPDATE ig_links SET "
+        (Q.u + "UPDATE " + table + " SET "
           +? "url = " +? igLink.url +? ", "
           +? "hashtag_id = " +? igLink.hashtagId +? ", "
           +? "ig_username = " +? igLink.igUsername +? ", "
@@ -94,85 +80,66 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
     )
   }
 
-  //[Admin]
-  //Get all links
   def allIgLinks(implicit db: Database): Seq[InstagramLink] = {
     db.withSession(
       implicit session =>
-        Q.queryNA[InstagramLink]("SELECT " + columns + " FROM ig_links").list
+        Q.queryNA[InstagramLink]("SELECT " + columns + " FROM " + table).list
     )
   }
 
-  //[Admin]
-  //Get link by id
   def igLinkById(id: Int)(implicit db: Database): InstagramLink = {
     db.withSession(
       implicit session =>
-        Q.query[(Int), InstagramLink]("SELECT " + columns + " FROM ig_links where id = ?" + id).first(id)
-        //sql"SELECT * FROM ig_links WHERE id = $id".as[InstagramLink].firstOption
+        Q.query[(Int), InstagramLink]("SELECT " + columns + " FROM " + table + " WHERE id = ?").first(id)
     )
   }
 
-  //[Demo/Admin]
-  //Get a list of approved links by hashtag
   def igLinksByHashtagApproved(hashtag: String)(implicit db: Database): Seq[InstagramLink] = {
     db.withSession(
       implicit session =>
         Q.queryNA[InstagramLink]
-          ("SELECT " + columns + " FROM ig_links AS igl INNER JOIN hashtags AS h ON igl.hashtag_id = h.id" +
+          ("SELECT " + columns + " FROM " + table + " AS igl INNER JOIN hashtags AS h ON igl.hashtag_id = h.id" +
             " WHERE h.hashtag = " + hashtag + " AND status = 'approved' ORDER BY igl.created_at DESC LIMIT 20 OFFSET X").list
     )
   }
 
-  //[Admin]
-  //Get a list of all links by hashtag
   def igLinksByHashtagAll(hashtag: String)(implicit db: Database): Seq[InstagramLink] = {
     db.withSession(
       implicit session =>
         /*Q.query[(String), InstagramLink]("SELECT " + columns + " FROM ig_links where id = ?" + hashtag).list(hashtag)*/
         Q.query[String, InstagramLink]
-          ("SELECT " + columns + " FROM ig_links AS igl INNER JOIN hashtags AS h ON igl.hashtag_id = h.id" +
+          ("SELECT " + columns + " FROM " + table + " AS igl INNER JOIN hashtags AS h ON igl.hashtag_id = h.id" +
             " WHERE h.hashtag = ? ORDER BY igl.created_at DESC LIMIT 20 OFFSET X").list(hashtag)
     )
   }
 
-
-  //[Admin]
-  //Get a list of banned links by hashtag
   def igLinksByHashtagBanned(hashtag: String)(implicit db: Database): Seq[InstagramLink] = {
     db.withSession(
       implicit session =>
         Q.queryNA[InstagramLink]
-          ("SELECT " + columns + " FROM ig_links AS igl INNER JOIN hashtags AS h ON igl.hashtag_id = h.id" +
+          ("SELECT " + columns + " FROM " + table + " AS igl INNER JOIN hashtags AS h ON igl.hashtag_id = h.id" +
             " WHERE h.hashtag = " + hashtag + " AND status = 'banned' ORDER BY igl.created_at DESC LIMIT 20 OFFSET X").list
     )
   }
 
-
-  //[Admin]
-  //Count the total number of links
   def countAllIgLinks(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        Q.queryNA[Int]("SELECT COUNT(*) FROM ig_links").first
+        Q.queryNA[Int]("SELECT COUNT(*) FROM " + table).first
     )
   }
 
-  //[Admin]
-  //Count the number of links by hashtag
   def countIgLinksByHashtag(hashtag:String)(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        Q.query[String, Int]("SELECT COUNT(*) FROM ig_links WHERE hashtag = ?").first(hashtag)
+        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + " WHERE hashtag = ?").first(hashtag)
     )
   }
 
-  //[Admin]
-  //Count the number of banned links by reason by hashtag
   def countBannedIgLinksByHashtag(hashtag:String)(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        Q.query[String, Int]("SELECT COUNT(*) FROM ig_links WHERE hashtag = ? AND status = 'banned'").first(hashtag)
+        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + " WHERE hashtag = ? AND status = 'banned'").first(hashtag)
     )
   }
 

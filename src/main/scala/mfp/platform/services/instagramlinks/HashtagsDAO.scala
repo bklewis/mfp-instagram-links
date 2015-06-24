@@ -6,28 +6,21 @@ import slick.jdbc.{StaticQuery => Q, GetResult}
 
 trait HashtagsDAO {
 
+  val table = "hashtags"
   val columns = "id, hashtag, admin_username, created_at, updated_at"
   val columnsNoId = "hashtag, admin_username, created_at, updated_at"
 
 
-  //[Admin]
-  //Post new link to table
   def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Int
 
-  //[Admin]
-  //Update link in database
   def updateHashtagById(hashtag: Hashtag)(implicit db: Database): Unit
 
-  //[Admin]
-  //Get all links
   def getAllHashtags(implicit db: Database): Seq[Hashtag]
 
-  //[Admin]
-  //Get link by id
   def getHashtagById(id: Int)(implicit db: Database): Hashtag
 
-  //[Admin]
-  //Count the total number of hashtags
+  def getHashtagByHashtag(hashtag: String)(implicit db: Database): Hashtag
+
   def countAllHashtags(implicit db: Database): Int
 
 }
@@ -35,12 +28,10 @@ trait HashtagsDAO {
 
 class DefaultHashtagsDAO extends HashtagsDAO {
 
-  //[Admin]
-  //Post new link to table
   def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        (Q.u + "INSERT INTO hashtags (" +? columnsNoId +? ") VALUES ("
+        (Q.u + "INSERT INTO " + table + " (" +? columnsNoId +? ") VALUES ("
           +? hashtag.hashtag +? ", "
           +? hashtag.adminUsername +? ", "
           +? new java.sql.Timestamp(hashtag.createdAt.getTime) +? ", "
@@ -49,12 +40,10 @@ class DefaultHashtagsDAO extends HashtagsDAO {
     )
   }
 
-  //[Admin]
-  //Update link in database
   def updateHashtagById(hashtag: Hashtag)(implicit db: Database): Unit = {
     db.withSession(
       implicit session =>
-        (Q.u + "UPDATE hashtags (" +? columnsNoId +? ") VALUES ("
+        (Q.u + "UPDATE " + table + " (" +? columnsNoId +? ") VALUES ("
           +? hashtag.hashtag +? ", "
           +? hashtag.adminUsername +? ", "
           +? new java.sql.Timestamp(hashtag.createdAt.getTime) +? ", "
@@ -63,31 +52,31 @@ class DefaultHashtagsDAO extends HashtagsDAO {
     )
   }
 
-  //[Admin]
-  //Get all links
   def getAllHashtags(implicit db: Database): Seq[Hashtag] = {
     db.withSession(
       implicit session =>
-        Q.queryNA[Hashtag]("SELECT " + columns + " FROM hashtags").list
+        Q.queryNA[Hashtag]("SELECT " + columns + " FROM " + table).list
     )
   }
 
-  //[Admin]
-  //Get link by id
   def getHashtagById(id: Int)(implicit db: Database): Hashtag = {
     db.withSession(
       implicit session =>
-        Q.query[(Int), Hashtag]("SELECT " + columns + " FROM hashtags where id = ?" + id).first(id)
-      //sql"SELECT * FROM ig_links WHERE id = $id".as[InstagramLink].firstOption
+        Q.query[(Int), Hashtag]("SELECT " + columns + " FROM " + table + " where id = ?").first(id)
     )
   }
 
-  //[Admin]
-  //Count the total number of links
+  def getHashtagByHashtag(hashtag: String)(implicit db: Database): Hashtag = {
+    db.withSession(
+      implicit session =>
+        Q.query[(String), Hashtag]("SELECT " + columns + " FROM " + table + " where hashtag = ?").first(hashtag)
+    )
+  }
+
   def countAllHashtags(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        Q.queryNA[Int]("SELECT COUNT(*) FROM hashtags").first
+        Q.queryNA[Int]("SELECT COUNT(*) FROM " + table).first
     )
   }
 
