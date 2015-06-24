@@ -8,6 +8,6 @@ import scala.slick.driver.JdbcDriver.backend.Database
  */
 trait Databases {
 
-  def instagramDb: Database
+  def igLinksDb: Database
 
 }

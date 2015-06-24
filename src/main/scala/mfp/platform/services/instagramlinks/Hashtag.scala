@@ -1,9 +1,9 @@
 package mfp.platform.services.instagramlinks
 
-import org.joda.time.DateTime
+import java.sql.Timestamp
 
 case class Hashtag (id: Int,
                     hashtag: String,
                     adminUsername: String,
-                    createdAt: DateTime,
-                    updatedAt: DateTime)
+                    createdAt: Timestamp,
+                    updatedAt: Timestamp)

@@ -1,6 +1,20 @@
 package mfp.platform.services.instagramlinks
 
-object ScalaJdbcConnectSelect extends App{
+
+
+object ServiceBootstrap extends App {
+
+  import scala.slick.driver.H2Driver.simple._
+
+  implicit val db = Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb", driver = "org.h2.Driver") withSession {
+    implicit session =>
+
+  }
+
+}
+
+
+/*object ScalaJdbcConnectSelect extends App{
 
   override def main(args: Array[String]): Unit = {
     import java.sql.{DriverManager, ResultSet}
@@ -71,11 +85,99 @@ object ScalaJdbcConnectSelect extends App{
     connection.close()
   }*/
 
-}
+}*/
 
 
-object ServiceBootstrap  {
+/*object ServiceBootstrap extends App {
 
-}
+  import scala.slick.driver.H2Driver.simple._
+
+
+  // Definition of the InstagramLinks table
+  class InstagramLinks(tag: Tag) extends Table[(Int, String, Int, String, DateTime, String, String, DateTime, DateTime, Boolean, DateTime)](tag, "INSTAGRAMLINKS") {
+    def id = column[Int]("id", O.PrimaryKey) // This is the primary key column
+    def url = column[String]("url")
+    def hashtagId = column[Int]("hashtag_id")
+    def igUsername = column[String]("ig_username")
+    def igPostdate = column[DateTime]("ig_postdate")
+    def status = column[String]("status")
+    def adminUsername = column[String]("admin_username")
+    def createdAt = column[DateTime]("created_at")
+    def updatedAt = column[DateTime]("updated_at")
+    def starred = column[Boolean]("starred")
+    def starredExpiresAt = column[DateTime]("starred_expires_at")
+    // Every table needs a * projection with the same type as the table's type parameter
+    def * = (id, url, hashtagId, igUsername, igPostdate, status, adminUsername, createdAt, updatedAt, starred, starredExpiresAt)
+    // A reified foreign key relation that can be navigated to create a join
+    def hashtag = foreignKey("hashtag_fk", hashtagId, hashtags)(_.id)
+  }
+  val igLinks = TableQuery[InstagramLinks]
+
+  // Definition of the Hashtags table
+  class Hashtags (tag: Tag) extends Table[(Int, String, String, DateTime, DateTime)](tag, "HASHTAGS") {
+    def id = column[Int]("id", O.PrimaryKey) //This is the primary key column
+    def hashtag = column[String]("url")
+    def adminUsername = column[String]("hashtag_id")
+    def createdAt = column[DateTime]("created_at")
+    def updatedAt = column[DateTime]("updated_at")
+    def * = (id, hashtag, adminUsername, createdAt, updatedAt)
+  }
+  val hashtags = TableQuery[Hashtags]
+
+
+  // Definition of the BannedUsers table
+  class BannedUsers(tag: Tag) extends Table[(Int, String, String, String, DateTime, DateTime)](tag, "BANNEDUSERS") {
+    def id = column[Int]("id", O.PrimaryKey) //This is the primary key column
+    def igUsername = column[String]("ig_username")
+    def banReason = column[String]("ban_reason")
+    def adminUsername = column[String]("admin_username")
+    def createdAt = column[DateTime]("created_at")
+    def updatedAt = column[DateTime]("updated_at")
+    def * = (id, igUsername, banReason, adminUsername, createdAt, updatedAt)
+  }
+  val bannedUsers = TableQuery[BannedUsers]
+
+
+  // Create the tables, including the primary and foreign keys
+  (igLinks.ddl ++ hashtags.ddl ++ bannedUsers.ddl).create
+
+
+  //QUERIES
+
+
+  //I turned each of the db rows into InstagramLink Objects, but what do I do with them?
+  //Add them to a list and return?
+  //Simply spit out each one separately?
+  //How does implicit/explicit joining work in Slick - is it permanent or temporary?  Which do I use?
+  igLinks foreach {case (id, url, hashtagId, igUsername, igPostdate, status, adminUsername, createdAt, updatedAt, starred, starredExpiresAt) =>
+    InstagramLink(id, url, hashtagId, igUsername, igPostdate, status, adminUsername, createdAt, updatedAt, starred, starredExpiresAt)
+  }
+
+
+
+
+
+
+
+
+
+  //Create new link
+
+  // IMPLICIT INNER JOIN?
+  val implicitInnerJoin = for {
+    i <- igLinks
+    h <- hashtags if i.hashtagId === h.id   //or i.hashtag?
+  } yield (i.id, h.hashtag)
+
+
+  // EXPLICIT INNER JOIN?
+  val explicitInnerJoin = for {
+    (i, h) <- igLinks innerJoin hashtags on (_.hashtagId === _.id)
+  } yield (i.id, h.hashtag)
+
+
+  //jdbc:mysql://localhost:8889/ig_links
+  implicit val db = Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb", driver = "org.h2.Driver")
+}*/
 
 

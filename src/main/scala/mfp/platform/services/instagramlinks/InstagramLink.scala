@@ -1,15 +1,15 @@
 package mfp.platform.services.instagramlinks
 
-import org.joda.time.DateTime
+import java.sql.Timestamp
 
-case class InstagramLink (id: Int,
+case class InstagramLink (id: Int = -1,
                          url: String,
                          hashtagId: Int,
                          igUsername: String,
-                         igPostdate: DateTime,
+                         igPostdate: Timestamp,
                          status: String,
                          adminUsername: String,
-                         createdAt: DateTime,
-                         updatedAt: DateTime,
-                         starred: Boolean,
-                         starredExpiresAt: DateTime)
+                         createdAt: Timestamp,
+                         updatedAt: Timestamp,
+                         starred: Boolean = false,
+                         starredExpiresAt: Option[Timestamp] = None)
