@@ -8,7 +8,7 @@ object ServiceBootstrap extends App {
 
   println("Hello, world!")
 
-  implicit val db = Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb", driver = "org.h2.Driver")
+  implicit val db = Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb")
 
   var igLinksDAO = new DefaultIgLinksDAO
   var hashtagsDAO = new DefaultHashtagsDAO
