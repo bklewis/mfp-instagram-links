@@ -12,7 +12,7 @@ trait HashtagsDAO {
   val columns = "id, hashtag, admin_username, created_at, updated_at"
   val columnsNoId = "hashtag, admin_username, created_at, updated_at"
 
-  def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Int
+  def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Unit
 
   def updateHashtagById(hashtag: Hashtag)(implicit db: Database): Unit
 
@@ -29,16 +29,21 @@ trait HashtagsDAO {
 
 class DefaultHashtagsDAO extends HashtagsDAO {
 
-  def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Int = {
-    db.withSession(
-      implicit session =>
-        (Q.u + "INSERT INTO " + table + " (" +? columnsNoId +? ") VALUES ("
-          +? hashtag.hashtag +? ", "
-          +? hashtag.adminUsername +? ", "
-          +? new java.sql.Timestamp(hashtag.createdAt.getTime) +? ", "
-          +? new java.sql.Timestamp(hashtag.updatedAt.getTime)
-          +? ")").first
-    )
+  def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Unit = {
+    try {
+      db.withSession(
+        implicit session =>
+          (Q.u + "INSERT INTO " + table + " (" + columnsNoId + ") VALUES ('"
+            +? hashtag.hashtag +? "', '"
+            +? hashtag.adminUsername +? "', '"
+            +? new java.sql.Timestamp(hashtag.createdAt.getTime) +? "', '"
+            +? new java.sql.Timestamp(hashtag.updatedAt.getTime)
+            +? "');").execute()
+      )
+    } catch {
+      case e: Exception =>
+      e.printStackTrace()
+    }
   }
 
   def updateHashtagById(hashtag: Hashtag)(implicit db: Database): Unit = {

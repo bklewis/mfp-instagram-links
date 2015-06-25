@@ -1,6 +1,7 @@
 package mfp.platform.services.instagramlinks
 
 import mfp.platform.db.{DbConfig, PooledDatabaseProvider}
+import java.sql.Timestamp
 
 
 object ServiceBootstrap extends App {
@@ -19,6 +20,16 @@ object ServiceBootstrap extends App {
   var bDao = new DefaultBannedUsersDAO
 
   var count = iDao.countAllIgLinks
+  println(count)
+
+  val currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis()/1000)
+
+  var hashtagAllBran = new Hashtag(None, "allBran", "admin1", currentTimestamp, currentTimestamp)
+  var igLink1 = new InstagramLink(None, "https://instagram.com/p/4XIdsCGqq6/", hashtagAllBran, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, currentTimestamp, false, None)
+  hDao.createNewHashtag(hashtagAllBran)
+  //iDao.createNewIgLink(igLink1)
+
+  count = iDao.countAllIgLinks
   println(count)
 
   println("Farewell, world!")

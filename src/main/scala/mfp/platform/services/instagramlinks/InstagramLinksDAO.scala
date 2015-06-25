@@ -52,19 +52,18 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def createNewIgLink(igLink: InstagramLink)(implicit db: Database): Int = {
     db.withSession(
     implicit session =>
-
-      (Q.u + "INSERT INTO " + table + " (" +? columnsNoId +? ") VALUES ("
-        +? igLink.url +? ", "
-        +? igLink.hashtag.id +? ", "
-        +? igLink.igUsername +? ", "
-        +? new java.sql.Timestamp(igLink.igPostdate.getTime) +? ", "
-        +? igLink.status +? ", "
-        +? igLink.adminUsername +? ", "
+      (Q.u + "INSERT INTO " + table + " (" +? columnsNoId +? ") VALUES ('"
+        +? igLink.url +? "', "
+        +? igLink.hashtag.id +? ", '"
+        +? igLink.igUsername +? "', "
+        +? new java.sql.Timestamp(igLink.igPostdate.getTime) +? ", '"
+        +? igLink.status +? "', '"
+        +? igLink.adminUsername +? "', "
         +? new java.sql.Timestamp(igLink.createdAt.getTime) +? ", "
         +? new java.sql.Timestamp(igLink.updatedAt.getTime) +? ", "
-        +? igLink.starred +? ", "
+        +? (if(igLink.starred) 1 else 0) +? ", "
         +? igLink.starredExpiresAt.map(d => new java.sql.Timestamp(d.getTime))
-        +? ")").first //list?  //run? //execute?
+        +? ");").first //list?  //run? //execute?
     )
   }
 
