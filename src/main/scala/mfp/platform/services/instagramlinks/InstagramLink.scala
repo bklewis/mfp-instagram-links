@@ -4,7 +4,7 @@ import java.sql.Timestamp
 
 case class InstagramLink (id: Int,
                          url: String,
-                         hashtagId: Int,
+                         hashtag: Hashtag,
                          igUsername: String,
                          igPostdate: Timestamp,
                          status: String,

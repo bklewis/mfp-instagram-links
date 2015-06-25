@@ -3,13 +3,14 @@ package mfp.platform.services.instagramlinks
 import scala.slick.driver.JdbcDriver.backend.Database
 import slick.jdbc.{StaticQuery => Q, GetResult}
 
+import mfp.platform.services.instagramlinks.InstagramLinksDAO
+
 
 trait HashtagsDAO {
 
   val table = "hashtags"
   val columns = "id, hashtag, admin_username, created_at, updated_at"
   val columnsNoId = "hashtag, admin_username, created_at, updated_at"
-
 
   def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Int
 
@@ -79,6 +80,7 @@ class DefaultHashtagsDAO extends HashtagsDAO {
         Q.queryNA[Int]("SELECT COUNT(*) FROM " + table).first
     )
   }
+
 
   implicit val getHashtagsResult = GetResult(r => Hashtag(r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
 
