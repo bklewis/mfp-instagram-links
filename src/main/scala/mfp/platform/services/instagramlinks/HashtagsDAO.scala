@@ -10,9 +10,10 @@ trait HashtagsDAO {
 
   val table = "hashtags"
   val columns = "id, hashtag, admin_username, created_at, updated_at"
-  val columnsNoId = "hashtag, admin_username, created_at, updated_at"
+  val columnsCreate = "hashtag, admin_username, created_at, updated_at"
+  val columnsUpdate = "admin_username, updated_at"
 
-  def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Unit
+  def createNewHashtag(hashtag: NewHashtag)(implicit db: Database): Unit
 
   def updateHashtagById(hashtag: Hashtag)(implicit db: Database): Unit
 
@@ -29,33 +30,36 @@ trait HashtagsDAO {
 
 class DefaultHashtagsDAO extends HashtagsDAO {
 
-  def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Unit = {
-    try {
+  /*def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Unit = {
       db.withSession(
         implicit session =>
-          (Q.u + "INSERT INTO " + table + " (" + columnsNoId + ") VALUES ('"
-            +? hashtag.hashtag +? "', '"
-            +? hashtag.adminUsername +? "', '"
-            +? new java.sql.Timestamp(hashtag.createdAt.getTime) +? "', '"
-            +? new java.sql.Timestamp(hashtag.updatedAt.getTime)
-            +? "');").execute()
+          (Q.u + "INSERT INTO " + table + " (" + columnsNoId + ") VALUES ('" //+ hashtag.hashtag + "', 'admin1', NULL,NULL)").execute
+            + hashtag.hashtag.toLowerCase + "','"
+            + hashtag.adminUsername + "','"
+            + new java.sql.Timestamp(hashtag.createdAt.getTime).toString + "','"
+            + new java.sql.Timestamp(hashtag.updatedAt.getTime).toString
+            + "')").execute
       )
-    } catch {
-      case e: Exception =>
-      e.printStackTrace()
-    }
+  }*/
+
+  def createNewHashtag(hashtag: NewHashtag)(implicit db: Database): Unit = {
+    db.withSession(
+      implicit session =>
+        Q.update[(String, String, String)](
+          "INSERT INTO " + table + " (" + columnsCreate + ") VALUES (?,?,?)").execute( //+ hashtag.hashtag + "', 'admin1', NULL,NULL)").execute
+          hashtag.hashtag.toLowerCase,
+          hashtag.adminUsername,
+          new java.sql.Timestamp(hashtag.updatedAt.getTime).toString))
   }
 
   def updateHashtagById(hashtag: Hashtag)(implicit db: Database): Unit = {
     db.withSession(
       implicit session =>
-        (Q.u + "UPDATE " + table + " (" +? columnsNoId +? ") VALUES ("
-          +? hashtag.hashtag +? ", "
-          +? hashtag.adminUsername +? ", "
-          +? new java.sql.Timestamp(hashtag.createdAt.getTime) +? ", "
-          +? new java.sql.Timestamp(hashtag.updatedAt.getTime)
-          +? ")").first
-    )
+        Q.update[(String, String, Int)](
+          "UPDATE " + table + " SET admin_username=?, updated_at=? WHERE id=?").first(
+            hashtag.adminUsername,
+            new java.sql.Timestamp(hashtag.updatedAt.getTime).toString,
+            hashtag.id))
   }
 
   def getAllHashtags(implicit db: Database): Seq[Hashtag] = {
@@ -85,7 +89,6 @@ class DefaultHashtagsDAO extends HashtagsDAO {
         Q.queryNA[Int]("SELECT COUNT(*) FROM " + table).first
     )
   }
-
 
   implicit val getHashtagsResult = GetResult(r => Hashtag(r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
 

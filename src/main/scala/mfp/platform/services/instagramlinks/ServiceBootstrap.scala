@@ -15,22 +15,26 @@ object ServiceBootstrap extends App {
 
   implicit val db = dbProvider.igLinksDb
 
-  var iDao = new DefaultIgLinksDAO
+  //var iDao = new DefaultIgLinksDAO
   var hDao = new DefaultHashtagsDAO
   var bDao = new DefaultBannedUsersDAO
 
-  var count = iDao.countAllIgLinks
-  println(count)
+  //var count = iDao.countAllIgLinks
+  //println(count)
 
-  val currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis()/1000)
+  var currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis())
+  //currentTimestamp = new Timestamp(date.getTi)
+  println(currentTimestamp)
 
-  var hashtagAllBran = new Hashtag(None, "allBran", "admin1", currentTimestamp, currentTimestamp)
-  var igLink1 = new InstagramLink(None, "https://instagram.com/p/4XIdsCGqq6/", hashtagAllBran, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, currentTimestamp, false, None)
-  hDao.createNewHashtag(hashtagAllBran)
+  //var hashtag1 = new Hashtag(None, "optimusprime", "admin1", currentTimestamp, currentTimestamp)
+  //var igLink1 = new InstagramLink(None, "https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, currentTimestamp, false, None)
+  //hDao.createNewHashtag(hashtag1)
+  //var hashtag2 = new Hashtag(Some(11), "hansolo", "admin2", currentTimestamp, currentTimestamp)
+  //hDao.updateHashtagById(hashtag2)
   //iDao.createNewIgLink(igLink1)
 
-  count = iDao.countAllIgLinks
-  println(count)
+  //count = iDao.countAllIgLinks
+  //println(count)
 
   println("Farewell, world!")
 }

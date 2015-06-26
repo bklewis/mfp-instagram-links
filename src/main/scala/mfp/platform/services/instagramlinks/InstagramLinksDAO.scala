@@ -10,13 +10,13 @@ trait InstagramLinksDAO {
 
   val table = "ig_links"
   val columns = "id, url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
-  val columnsNoId = "url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
+  val columnsCreate = "url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
   val columnsAndHashtagCols = "i.id, i.url, i.hashtag_id, h.hashtag, h.admin_username, h.created_at, h.updated_at, i.ig_username, i.ig_postdate, i.status, i.admin_username, i.created_at, i.updated_at, i.starred, i.starred_expires_at"
 
   val hashtagsDAO = new DefaultHashtagsDAO
 
   //[Admin]
-  def createNewIgLink(igLink: InstagramLink)(implicit db: Database): Int
+  def createNewIgLink(igLink: NewInstagramLink)(implicit db: Database): Unit
 
   //[Admin]
   def updateIgLinkById(igLink: InstagramLink)(implicit db: Database): Unit
@@ -49,40 +49,42 @@ trait InstagramLinksDAO {
 
 class DefaultIgLinksDAO extends InstagramLinksDAO {
 
-  def createNewIgLink(igLink: InstagramLink)(implicit db: Database): Int = {
+  def createNewIgLink(igLink: NewInstagramLink)(implicit db: Database): Unit = {
     db.withSession(
     implicit session =>
-      (Q.u + "INSERT INTO " + table + " (" +? columnsNoId +? ") VALUES ('"
-        +? igLink.url +? "', "
-        +? igLink.hashtag.id +? ", '"
-        +? igLink.igUsername +? "', "
-        +? new java.sql.Timestamp(igLink.igPostdate.getTime) +? ", '"
-        +? igLink.status +? "', '"
-        +? igLink.adminUsername +? "', "
-        +? new java.sql.Timestamp(igLink.createdAt.getTime) +? ", "
-        +? new java.sql.Timestamp(igLink.updatedAt.getTime) +? ", "
-        +? (if(igLink.starred) 1 else 0) +? ", "
-        +? igLink.starredExpiresAt.map(d => new java.sql.Timestamp(d.getTime))
-        +? ");").first //list?  //run? //execute?
-    )
+      Q.update[(String, Int, String, String, String, String, String, Int, String)](
+        "INSERT INTO " + table + " (" + columnsCreate + ") VALUES (?,?,?)").execute(
+        igLink.url,
+        igLink.hashtag.id,
+        igLink.igUsername,
+        new java.sql.Timestamp(igLink.igPostdate.getTime).toString,
+        igLink.status,
+        igLink.adminUsername,
+        new java.sql.Timestamp(igLink.updatedAt.getTime).toString,
+        if(igLink.starred) 1 else 0,
+        new java.sql.Timestamp(igLink.starredExpiresAt.getTime).toString))
   }
+
 
   def updateIgLinkById(igLink: InstagramLink)(implicit db: Database): Unit = {
     db.withSession(
       implicit session =>
-        (Q.u + "UPDATE " + table + " SET "
-          +? "url = " +? igLink.url +? ", "
-          +? "hashtag_id = " +? igLink.hashtag.id +? ", "
-          +? "ig_username = " +? igLink.igUsername +? ", "
-          +? "ig_postdate = " +? new java.sql.Timestamp(igLink.igPostdate.getTime) +? ", "
-          +? "status = " +? igLink.status +? ", "
-          +? "admin_username = " +? igLink.adminUsername +? ", "
-          +? "created_at = " +? new java.sql.Timestamp(igLink.createdAt.getTime) +? ", "
-          +? "updated_at = " +? new java.sql.Timestamp(igLink.updatedAt.getTime) +? ", "
-          +? "starred = " +? igLink.starred +? ", "
-          +? "starred_expires_at = " +? igLink.starredExpiresAt.map(d => new java.sql.Timestamp(d.getTime))
-          +? " WHERE id = " +? igLink.id).first //list?  //run? //execute?
-    )
+        Q.update[(String, Int, String, String, String, String, String, Int, String, Int)](
+          "UPDATE " + table + " SET url=?,hashtag_id=?,ig_username=?,ig_postdate=?,status=?,admin_username=?,updated_at=?,starred=?,starred_expires_at WHERE id=?").first(
+            //"url",
+            igLink.url,
+            //"hashtag_id",
+            igLink.hashtag.id,
+            //"ig_username",
+            igLink.igUsername,
+            //"ig_postdate",
+            new java.sql.Timestamp(igLink.igPostdate.getTime).toString,
+            igLink.status,
+            igLink.adminUsername,
+            new java.sql.Timestamp(igLink.updatedAt.getTime).toString,
+            if(igLink.starred) 1 else 0,
+            new java.sql.Timestamp(igLink.starredExpiresAt.getTime).toString,
+            igLink.id))
   }
 
   def getAllIgLinks(implicit db: Database): Seq[InstagramLink] = {
