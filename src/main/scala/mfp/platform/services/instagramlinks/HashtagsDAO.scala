@@ -10,7 +10,7 @@ trait HashtagsDAO {
 
   val table = "hashtags"
   val columns = "id, hashtag, admin_username, created_at, updated_at"
-  val columnsCreate = "hashtag, admin_username, created_at, updated_at"
+  val columnsCreate = "hashtag, admin_username, updated_at"
   val columnsUpdate = "admin_username, updated_at"
 
   def createNewHashtag(hashtag: NewHashtag)(implicit db: Database): Unit
@@ -79,7 +79,7 @@ class DefaultHashtagsDAO extends HashtagsDAO {
   def getHashtagByHashtag(hashtag: String)(implicit db: Database): Hashtag = {
     db.withSession(
       implicit session =>
-        Q.query[(String), Hashtag]("SELECT " + columns + " FROM " + table + " where hashtag = ?").first(hashtag)
+        Q.query[(String), Hashtag]("SELECT " + columns + " FROM " + table + " where hashtag = ?").first(hashtag.toLowerCase)
     )
   }
 

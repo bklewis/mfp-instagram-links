@@ -24,17 +24,21 @@ object ServiceBootstrap extends App {
 
   var currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis())
   //currentTimestamp = new Timestamp(date.getTi)
-  println(currentTimestamp)
+  //println(currentTimestamp)
 
-  //var hashtag1 = new Hashtag(None, "optimusprime", "admin1", currentTimestamp, currentTimestamp)
+  //var hashtag1 = new NewHashtag("", "admin1", currentTimestamp)
   //var igLink1 = new InstagramLink(None, "https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, currentTimestamp, false, None)
   //hDao.createNewHashtag(hashtag1)
-  //var hashtag2 = new Hashtag(Some(11), "hansolo", "admin2", currentTimestamp, currentTimestamp)
-  //hDao.updateHashtagById(hashtag2)
+  //var hashtag2 = hDao.getHashtagByHashtag("pinguinos")
+  //var hashtag2id = hashtag2.id
+  //hDao.updateHashtagById(new Hashtag(27, "pinguinos", "admin2", currentTimestamp, currentTimestamp))
   //iDao.createNewIgLink(igLink1)
 
-  //count = iDao.countAllIgLinks
-  //println(count)
+  //println(hDao.countAllHashtags)
+  //println(hDao.getAllHashtags mkString "\n")
+  //println(hDao.getHashtagById(1).toString)
+  //println(hDao.getHashtagByHashtag("jarjarbinks").toString)
+
 
   println("Farewell, world!")
 }
