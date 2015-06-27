@@ -70,7 +70,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
     db.withSession(
       implicit session =>
         Q.update[(String, Int, String, String, String, String, String, Int, String, Int)](
-          "UPDATE " + table + " SET url=?,hashtag_id=?,ig_username=?,ig_postdate=?,status=?,admin_username=?,updated_at=?,starred=?,starred_expires_at WHERE id=?").first(
+          "UPDATE " + table + " SET url=?,hashtag_id=?,ig_username=?,ig_postdate=?,status=?,admin_username=?,updated_at=?,starred=?,starred_expires_at=? WHERE id=?").first(
             //"url",
             igLink.url,
             //"hashtag_id",
@@ -140,7 +140,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def countIgLinksByHashtag(hashtag:String)(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + "AS i INNER JOIN " + hashtagsDAO.table
+        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table
           + " AS h ON i.hashtag_id = h.id" + " WHERE h.hashtag = ?").first(hashtag)
     )
   }
@@ -148,7 +148,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def countBannedIgLinksByHashtag(hashtag:String)(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + "AS i INNER JOIN " + hashtagsDAO.table
+        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table
           + " AS h ON i.hashtag_id = h.id" + " WHERE h.hashtag = ? AND status = 'banned'").first(hashtag)
     )
   }
