@@ -10,7 +10,7 @@ trait InstagramLinksDAO {
 
   val table = "ig_links"
   val columns = "id, url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
-  val columnsCreate = "url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
+  val columnsCreate = "url, hashtag_id, ig_username, ig_postdate, status, admin_username, updated_at, starred, starred_expires_at"
   val columnsAndHashtagCols = "i.id, i.url, i.hashtag_id, h.hashtag, h.admin_username, h.created_at, h.updated_at, i.ig_username, i.ig_postdate, i.status, i.admin_username, i.created_at, i.updated_at, i.starred, i.starred_expires_at"
 
   val hashtagsDAO = new DefaultHashtagsDAO
@@ -53,7 +53,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
     db.withSession(
     implicit session =>
       Q.update[(String, Int, String, String, String, String, String, Int, String)](
-        "INSERT INTO " + table + " (" + columnsCreate + ") VALUES (?,?,?)").execute(
+        "INSERT INTO " + table + " (" + columnsCreate + ") VALUES (?,?,?,?,?,?,?,?,?)").execute(
         igLink.url,
         igLink.hashtag.id,
         igLink.igUsername,
@@ -90,7 +90,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def getAllIgLinks(implicit db: Database): Seq[InstagramLink] = {
     db.withSession(
       implicit session =>
-        Q.queryNA[InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + "AS i INNER JOIN " + hashtagsDAO.table
+        Q.queryNA[InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table
         + " AS h ON i.hashtag_id = h.id").list
     )
   }
@@ -98,7 +98,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def getIgLinkById(id: Int)(implicit db: Database): InstagramLink = {
     db.withSession(
       implicit session =>
-        Q.query[(Int), InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + "AS i INNER JOIN " + hashtagsDAO.table
+        Q.query[(Int), InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table
           + " AS h ON i.hashtag_id = h.id WHERE i.id = ?").first(id)
     )
   }
@@ -126,7 +126,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
       implicit session =>
         Q.query[String, InstagramLink]
           ("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table + " AS h ON igl.hashtag_id = h.id" +
-            " WHERE h.hashtag = ? AND status = 'banned' ORDER BY igl.created_at DESC").list(hashtag)
+            " WHERE h.hashtag = ? AND status = 'banned' ORDER BY i.created_at DESC").list(hashtag)
     )
   }
 

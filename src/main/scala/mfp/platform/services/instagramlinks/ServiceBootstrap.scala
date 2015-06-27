@@ -15,7 +15,7 @@ object ServiceBootstrap extends App {
 
   implicit val db = dbProvider.igLinksDb
 
-  //var iDao = new DefaultIgLinksDAO
+  var iDao = new DefaultIgLinksDAO
   var hDao = new DefaultHashtagsDAO
   var bDao = new DefaultBannedUsersDAO
 
@@ -27,7 +27,6 @@ object ServiceBootstrap extends App {
   //println(currentTimestamp)
 
   //var hashtag1 = new NewHashtag("", "admin1", currentTimestamp)
-  //var igLink1 = new InstagramLink(None, "https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, currentTimestamp, false, None)
   //hDao.createNewHashtag(hashtag1)
   //var hashtag2 = hDao.getHashtagByHashtag("pinguinos")
   //var hashtag2id = hashtag2.id
@@ -39,6 +38,24 @@ object ServiceBootstrap extends App {
   //println(hDao.getHashtagById(1).toString)
   //println(hDao.getHashtagByHashtag("jarjarbinks").toString)
 
+  var hashtag1 = hDao.getHashtagByHashtag("allbran")
+  var hashtag2 = hDao.getHashtagById(13)
+  var igLink1 = new NewInstagramLink("https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, false, currentTimestamp)
+  var igLink2 = new NewInstagramLink("https://instagram.com/p/4W6rbwlysz/", hashtag1, "myfitnesspal", new java.sql.Timestamp(1435256229), "approved", "admin1", currentTimestamp, false, currentTimestamp)
+  var igLink3 = new NewInstagramLink("https://instagram.com/p/testtestte/", hashtag1, "kazzypops88", new java.sql.Timestamp(1435256333), "approved", "admin1", currentTimestamp, true, currentTimestamp)
+
+  iDao.createNewIgLink(igLink1)
+  iDao.createNewIgLink(igLink2)
+  iDao.createNewIgLink(igLink3)
+  println(iDao.getAllIgLinks mkString "\n")
+  //println(iDao.getIgLinkById(27).toString)
+  //println(iDao.getIgLinksByHashtagAll("allbran").toString)
+  println(iDao.getIgLinksByHashtagApproved("allbran").toString())
+  println(iDao.countAllIgLinks)
+  //println(iDao.countIgLinksByHashtag("allbran"))
+  //println(iDao.countBannedIgLinksByHashtag("allbran"))
+  //iDao.updateIgLinkById(new InstagramLink(1, "https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin2", currentTimestamp, currentTimestamp, false, currentTimestamp))
+  //println(iDao.getIgLinkById(1).toString)
 
   println("Farewell, world!")
 }
