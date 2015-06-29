@@ -8,7 +8,7 @@ trait BannedUsersDAO {
 
   val table = "banned_users"
   val columns = "id, ig_username, ban_reason, admin_username, created_at, updated_at"
-  val columnsNoId = "ig_username, ban_reason, admin_username, created_at, updated_at"
+  val columnsNoId = "ig_username, ban_reason, admin_username, updated_at"
 
 
   def createNewBannedUser(user: NewBannedUser)(implicit db: Database): Unit
