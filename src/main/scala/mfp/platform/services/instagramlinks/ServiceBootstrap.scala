@@ -58,18 +58,20 @@ object ServiceBootstrap extends App {
   //println(iDao.getIgLinkById(33).toString)
 
 
-  //bDao.createNewBannedUser(new NewBannedUser("yourmotherwasahamster", "profanity", "admin1", currentTimestamp))
+  //bDao.createNewBannedUser(new NewBannedUser("shoopdaboop", "profanity", "admin1", currentTimestamp))
   //bDao.createNewBannedUser(new NewBannedUser("yourfathersmeltofelderberries", "irrelevant", "admin1", currentTimestamp))
 
   //bDao.updateBannedUserById(new BannedUser(1, "yourmotherwasahamster", "profanity", "admin2", currentTimestamp, currentTimestamp))
 
   //println(bDao.getAllBannedUsers mkString "\n")
 
-  println(bDao.getBannedUserById(2).toString)
+  //println(bDao.getBannedUserById(2).toString)
 
-  println(bDao.getBannedUserByUsername("yourmotherwasahamster").toString)
+  //println(bDao.getBannedUserByUsername("yourmotherwasahamster").toString)
 
-  println(bDao.countAllBannedUsers)
+  //println(bDao.countAllBannedUsers)
+
+  println(bDao.deleteBannedUserById(3))
 
 
 

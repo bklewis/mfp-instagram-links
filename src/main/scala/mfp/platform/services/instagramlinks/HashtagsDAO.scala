@@ -3,15 +3,11 @@ package mfp.platform.services.instagramlinks
 import scala.slick.driver.JdbcDriver.backend.Database
 import slick.jdbc.{StaticQuery => Q, GetResult}
 
-import mfp.platform.services.instagramlinks.InstagramLinksDAO
-
-
 trait HashtagsDAO {
 
   val table = "hashtags"
   val columns = "id, hashtag, admin_username, created_at, updated_at"
   val columnsCreate = "hashtag, admin_username, updated_at"
-  val columnsUpdate = "admin_username, updated_at"
 
   def createNewHashtag(hashtag: NewHashtag)(implicit db: Database): Unit
 

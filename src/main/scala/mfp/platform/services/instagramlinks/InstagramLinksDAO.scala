@@ -4,8 +4,6 @@ import scala.slick.driver.JdbcDriver.backend.Database
 import java.sql.{SQLException, Timestamp}
 import slick.jdbc.{StaticQuery => Q, GetResult}
 
-import mfp.platform.services.instagramlinks.DefaultHashtagsDAO
-
 trait InstagramLinksDAO {
 
   val table = "ig_links"
