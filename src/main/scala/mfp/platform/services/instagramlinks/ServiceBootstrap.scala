@@ -71,9 +71,7 @@ object ServiceBootstrap extends App {
 
   //println(bDao.countAllBannedUsers)
 
-  println(bDao.deleteBannedUserById(3))
-
-
+  //println(bDao.deleteBannedUserById(3))
 
   println("Farewell, world!")
 }

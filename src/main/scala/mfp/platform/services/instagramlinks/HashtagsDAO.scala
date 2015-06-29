@@ -21,6 +21,10 @@ trait HashtagsDAO {
 
   def countAllHashtags(implicit db: Database): Int
 
+  def deleteHashtag(hashtag: Hashtag)(implicit db: Database): Int
+
+  def deleteHashtagById(id: Int)(implicit db: Database): Int
+
 }
 
 
@@ -83,6 +87,20 @@ class DefaultHashtagsDAO extends HashtagsDAO {
     db.withSession(
       implicit session =>
         Q.queryNA[Int]("SELECT COUNT(*) FROM " + table).first
+    )
+  }
+
+  def deleteHashtag(hashtag: Hashtag)(implicit db: Database): Int = {
+    db.withSession(
+      implicit session =>
+        Q.query[Int, Int]("DELETE FROM " + table + " WHERE id=?").first(hashtag.id)
+    )
+  }
+
+  def deleteHashtagById(id: Int)(implicit db: Database): Int = {
+    db.withSession(
+      implicit session =>
+        Q.query[Int, Int]("DELETE FROM " + table + " WHERE id=?").first(id)
     )
   }
 
