@@ -57,6 +57,8 @@ object ServiceBootstrap extends App {
   //iDao.updateIgLinkById(new InstagramLink(33, "https://instagram.com/p/UPDATEDURL/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin2", currentTimestamp, currentTimestamp, false, currentTimestamp))
   //println(iDao.getIgLinkById(33).toString)
 
+  hDao.deleteHashtagById(3)
+
 
   //bDao.createNewBannedUser(new NewBannedUser("shoopdaboop", "profanity", "admin1", currentTimestamp))
   //bDao.createNewBannedUser(new NewBannedUser("yourfathersmeltofelderberries", "irrelevant", "admin1", currentTimestamp))

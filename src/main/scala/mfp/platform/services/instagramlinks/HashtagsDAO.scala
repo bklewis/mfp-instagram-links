@@ -9,6 +9,8 @@ trait HashtagsDAO {
   val columns = "id, hashtag, admin_username, created_at, updated_at"
   val columnsCreate = "hashtag, admin_username, updated_at"
 
+  val iDao = new DefaultIgLinksDAO
+
   def createNewHashtag(hashtag: NewHashtag)(implicit db: Database): Unit
 
   def updateHashtagById(hashtag: Hashtag)(implicit db: Database): Unit
@@ -26,7 +28,6 @@ trait HashtagsDAO {
   def deleteHashtagById(id: Int)(implicit db: Database): Int
 
 }
-
 
 class DefaultHashtagsDAO extends HashtagsDAO {
 
@@ -98,6 +99,7 @@ class DefaultHashtagsDAO extends HashtagsDAO {
   }
 
   def deleteHashtagById(id: Int)(implicit db: Database): Int = {
+    iDao.deleteIgLinksByHashtagId(id)
     db.withSession(
       implicit session =>
         Q.query[Int, Int]("DELETE FROM " + table + " WHERE id=?").first(id)

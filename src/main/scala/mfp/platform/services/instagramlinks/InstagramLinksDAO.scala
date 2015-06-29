@@ -11,7 +11,7 @@ trait InstagramLinksDAO {
   val columnsCreate = "url, hashtag_id, ig_username, ig_postdate, status, admin_username, updated_at, starred, starred_expires_at"
   val columnsAndHashtagCols = "i.id, i.url, i.hashtag_id, h.hashtag, h.admin_username, h.created_at, h.updated_at, i.ig_username, i.ig_postdate, i.status, i.admin_username, i.created_at, i.updated_at, i.starred, i.starred_expires_at"
 
-  val hashtagsDAO = new DefaultHashtagsDAO
+  val hashtagsTable = "hashtags"
 
   //[Admin]
   def createNewIgLink(igLink: NewInstagramLink)(implicit db: Database): Unit
@@ -42,6 +42,9 @@ trait InstagramLinksDAO {
 
   //[Admin]
   def countBannedIgLinksByHashtag(hashtag:String)(implicit db: Database): Int
+
+  //[Admin]
+  def deleteIgLinksByHashtagId(hashtagId:Int) (implicit db: Database): Unit
 
 }
 
@@ -88,7 +91,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def getAllIgLinks(implicit db: Database): Seq[InstagramLink] = {
     db.withSession(
       implicit session =>
-        Q.queryNA[InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table
+        Q.queryNA[InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable
         + " AS h ON i.hashtag_id = h.id").list
     )
   }
@@ -96,7 +99,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def getIgLinkById(id: Int)(implicit db: Database): InstagramLink = {
     db.withSession(
       implicit session =>
-        Q.query[(Int), InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table
+        Q.query[(Int), InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable
           + " AS h ON i.hashtag_id = h.id WHERE i.id = ?").first(id)
     )
   }
@@ -105,7 +108,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
     db.withSession(
       implicit session =>
         Q.query[String, InstagramLink]
-          ("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table + " AS h ON i.hashtag_id = h.id" +
+          ("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
             " WHERE h.hashtag = ? AND status = 'approved' ORDER BY i.created_at DESC").list(hashtag)
     )
   }
@@ -114,7 +117,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
     db.withSession(
       implicit session =>
         Q.query[String, InstagramLink]
-          ("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table + " AS h ON i.hashtag_id = h.id" +
+          ("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
             " WHERE h.hashtag = ? ORDER BY i.created_at DESC").list(hashtag)
     )
   }
@@ -123,7 +126,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
     db.withSession(
       implicit session =>
         Q.query[String, InstagramLink]
-          ("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table + " AS h ON igl.hashtag_id = h.id" +
+          ("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable + " AS h ON igl.hashtag_id = h.id" +
             " WHERE h.hashtag = ? AND status = 'banned' ORDER BY i.created_at DESC").list(hashtag)
     )
   }
@@ -138,7 +141,7 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def countIgLinksByHashtag(hashtag:String)(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table
+        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + " AS i INNER JOIN " + hashtagsTable
           + " AS h ON i.hashtag_id = h.id" + " WHERE h.hashtag = ?").first(hashtag)
     )
   }
@@ -146,8 +149,15 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
   def countBannedIgLinksByHashtag(hashtag:String)(implicit db: Database): Int = {
     db.withSession(
       implicit session =>
-        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + " AS i INNER JOIN " + hashtagsDAO.table
+        Q.query[String, Int]("SELECT COUNT(*) FROM " + table + " AS i INNER JOIN " + hashtagsTable
           + " AS h ON i.hashtag_id = h.id" + " WHERE h.hashtag = ? AND status = 'banned'").first(hashtag)
+    )
+  }
+
+  def deleteIgLinksByHashtagId(hashtagId:Int) (implicit db: Database): Unit = {
+    db.withSession(
+      implicit session =>
+        Q.query[Int, Int]("DELETE FROM " + table + " WHERE hashtag_id=?").execute(hashtagId)
     )
   }
 
