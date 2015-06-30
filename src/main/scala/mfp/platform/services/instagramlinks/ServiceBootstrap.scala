@@ -19,12 +19,10 @@ object ServiceBootstrap extends App {
   var hDao = new DefaultHashtagsDAO
   var bDao = new DefaultBannedUsersDAO
 
+  var currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis())
+
   //var count = iDao.countAllIgLinks
   //println(count)
-
-  var currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis())
-  //currentTimestamp = new Timestamp(date.getTi)
-  //println(currentTimestamp)
 
   //var hashtag1 = new NewHashtag("", "admin1", currentTimestamp)
   //hDao.createNewHashtag(hashtag1)
@@ -38,11 +36,11 @@ object ServiceBootstrap extends App {
   //println(hDao.getHashtagById(1).toString)
   //println(hDao.getHashtagByHashtag("jarjarbinks").toString)
 
-  var hashtag1 = hDao.getHashtagByHashtag("allbran")
-  var hashtag2 = hDao.getHashtagById(13)
-  var igLink1 = new NewInstagramLink("https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, false, currentTimestamp)
-  var igLink2 = new NewInstagramLink("https://instagram.com/p/4W6rbwlysz/", hashtag1, "myfitnesspal", new java.sql.Timestamp(1435256229), "approved", "admin1", currentTimestamp, false, currentTimestamp)
-  var igLink3 = new NewInstagramLink("https://instagram.com/p/testtestte/", hashtag1, "kazzypops88", new java.sql.Timestamp(1435256333), "approved", "admin1", currentTimestamp, true, currentTimestamp)
+  //var hashtag1 = hDao.getHashtagByHashtag("allbran")
+  //var hashtag2 = hDao.getHashtagById(13)
+  //var igLink1 = new NewInstagramLink("https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, false, currentTimestamp)
+  //var igLink2 = new NewInstagramLink("https://instagram.com/p/4W6rbwlysz/", hashtag1, "myfitnesspal", new java.sql.Timestamp(1435256229), "approved", "admin1", currentTimestamp, false, currentTimestamp)
+  //var igLink3 = new NewInstagramLink("https://instagram.com/p/testtestte/", hashtag1, "kazzypops88", new java.sql.Timestamp(1435256333), "approved", "admin1", currentTimestamp, true, currentTimestamp)
 
   //iDao.createNewIgLink(igLink1)
   //iDao.createNewIgLink(igLink2)
@@ -57,27 +55,20 @@ object ServiceBootstrap extends App {
   //iDao.updateIgLinkById(new InstagramLink(33, "https://instagram.com/p/UPDATEDURL/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin2", currentTimestamp, currentTimestamp, false, currentTimestamp))
   //println(iDao.getIgLinkById(33).toString)
 
-  hDao.deleteHashtagById(3)
-
+  //hDao.deleteHashtagById(3)
 
   //bDao.createNewBannedUser(new NewBannedUser("shoopdaboop", "profanity", "admin1", currentTimestamp))
   //bDao.createNewBannedUser(new NewBannedUser("yourfathersmeltofelderberries", "irrelevant", "admin1", currentTimestamp))
-
   //bDao.updateBannedUserById(new BannedUser(1, "yourmotherwasahamster", "profanity", "admin2", currentTimestamp, currentTimestamp))
 
   //println(bDao.getAllBannedUsers mkString "\n")
-
   //println(bDao.getBannedUserById(2).toString)
-
   //println(bDao.getBannedUserByUsername("yourmotherwasahamster").toString)
-
   //println(bDao.countAllBannedUsers)
-
   //println(bDao.deleteBannedUserById(3))
 
   println("Farewell, world!")
 }
-
 
 /*object ScalaJdbcConnectSelect extends App{
 
@@ -151,7 +142,6 @@ object ServiceBootstrap extends App {
   }*/
 
 }*/
-
 
 /*object ServiceBootstrap extends App {
 

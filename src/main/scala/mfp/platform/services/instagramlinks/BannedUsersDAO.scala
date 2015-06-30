@@ -25,7 +25,7 @@ trait BannedUsersDAO {
 
   def deleteBannedUser(user: BannedUser)(implicit db:Database): Int
 
-  def deleteBannedUserById(id: Int)(implicit db:Database): Int
+  //def deleteBannedUserById(id: Int)(implicit db:Database): Int
 
   }
 
@@ -52,32 +52,6 @@ class DefaultBannedUsersDAO extends BannedUsersDAO {
           new java.sql.Timestamp(user.updatedAt.getTime).toString,
           user.id))
   }
-
-  /*def createNewBannedUser(user: BannedUser)(implicit db: Database): Int = {
-    db.withSession(
-      implicit session =>
-        (Q.u + "INSERT INTO " + table + " (" + columnsNoId + ") VALUES ('"
-          + user.igUsername + "','"
-          + user.banReason + "','"
-          + user.adminUsername + "','"
-          + new java.sql.Timestamp(user.createdAt.getTime).toString + "','"
-          + new java.sql.Timestamp(user.updatedAt.getTime).toString
-          + "')").first
-    )
-  }
-
-  def updateBannedUserById(user: BannedUser)(implicit db: Database): Unit = {
-    db.withSession(
-      implicit session =>
-        (Q.u + "UPDATE " + table + " (" + columnsNoId + ") VALUES ("
-          + user.igUsername + "','"
-          + user.banReason + "','"
-          + user.adminUsername + "','"
-          + new java.sql.Timestamp(user.createdAt.getTime).toString + "','"
-          + new java.sql.Timestamp(user.updatedAt.getTime).toString
-          + "')").first
-    )
-  }*/
 
   def getAllBannedUsers(implicit db: Database): Seq[BannedUser] = {
     db.withSession(
@@ -117,12 +91,12 @@ class DefaultBannedUsersDAO extends BannedUsersDAO {
     )
   }
 
-  def deleteBannedUserById(id: Int)(implicit db:Database): Int = {
+  /*def deleteBannedUserById(id: Int)(implicit db:Database): Int = {
     db.withSession(
       implicit session =>
         Q.query[Int, Int]("DELETE FROM " + table + " WHERE id = ?").first(id)
     )
-  }
+  }*/
 
   implicit val getBannedUsersResult = GetResult(r => BannedUser(r.<<, r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
 

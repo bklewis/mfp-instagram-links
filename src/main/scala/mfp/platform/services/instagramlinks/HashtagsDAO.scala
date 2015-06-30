@@ -25,23 +25,11 @@ trait HashtagsDAO {
 
   def deleteHashtag(hashtag: Hashtag)(implicit db: Database): Int
 
-  def deleteHashtagById(id: Int)(implicit db: Database): Int
+  //def deleteHashtagById(id: Int)(implicit db: Database): Int
 
 }
 
 class DefaultHashtagsDAO extends HashtagsDAO {
-
-  /*def createNewHashtag(hashtag: Hashtag)(implicit db: Database): Unit = {
-      db.withSession(
-        implicit session =>
-          (Q.u + "INSERT INTO " + table + " (" + columnsNoId + ") VALUES ('" //+ hashtag.hashtag + "', 'admin1', NULL,NULL)").execute
-            + hashtag.hashtag.toLowerCase + "','"
-            + hashtag.adminUsername + "','"
-            + new java.sql.Timestamp(hashtag.createdAt.getTime).toString + "','"
-            + new java.sql.Timestamp(hashtag.updatedAt.getTime).toString
-            + "')").execute
-      )
-  }*/
 
   def createNewHashtag(hashtag: NewHashtag)(implicit db: Database): Unit = {
     db.withSession(
@@ -92,19 +80,20 @@ class DefaultHashtagsDAO extends HashtagsDAO {
   }
 
   def deleteHashtag(hashtag: Hashtag)(implicit db: Database): Int = {
+    iDao.deleteIgLinksByHashtagId(hashtag.id)
     db.withSession(
       implicit session =>
         Q.query[Int, Int]("DELETE FROM " + table + " WHERE id=?").first(hashtag.id)
     )
   }
 
-  def deleteHashtagById(id: Int)(implicit db: Database): Int = {
+  /*def deleteHashtagById(id: Int)(implicit db: Database): Int = {
     iDao.deleteIgLinksByHashtagId(id)
     db.withSession(
       implicit session =>
         Q.query[Int, Int]("DELETE FROM " + table + " WHERE id=?").first(id)
     )
-  }
+  }*/
 
   implicit val getHashtagsResult = GetResult(r => Hashtag(r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
 
