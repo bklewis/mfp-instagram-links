@@ -21,8 +21,8 @@ object ServiceBootstrap extends App {
 
   var currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis())
 
-  //var count = iDao.countAllIgLinks
-  //println(count)
+  var count = iDao.countAllIgLinks
+  println(count)
 
   //var hashtag1 = new NewHashtag("", "admin1", currentTimestamp)
   //hDao.createNewHashtag(hashtag1)
