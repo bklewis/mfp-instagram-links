@@ -6,8 +6,6 @@ import java.sql.Timestamp
 
 object ServiceBootstrap extends App {
 
-  import scala.slick.driver.H2Driver.simple._
-
   println("Hello, world!")
 
   val dbProvider = new DefaultDatabases with PooledDatabaseProvider with DbConfig
