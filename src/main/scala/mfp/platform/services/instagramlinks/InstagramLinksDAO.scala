@@ -72,13 +72,9 @@ class DefaultIgLinksDAO extends InstagramLinksDAO {
       implicit session =>
         Q.update[(String, Int, String, String, String, String, String, Int, String, Int)](
           "UPDATE " + table + " SET url=?,hashtag_id=?,ig_username=?,ig_postdate=?,status=?,admin_username=?,updated_at=?,starred=?,starred_expires_at=? WHERE id=?").first(
-            //"url",
             igLink.url,
-            //"hashtag_id",
             igLink.hashtag.id,
-            //"ig_username",
             igLink.igUsername,
-            //"ig_postdate",
             new java.sql.Timestamp(igLink.igPostdate.getTime).toString,
             igLink.status,
             igLink.adminUsername,
