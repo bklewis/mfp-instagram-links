@@ -18,18 +18,58 @@ import scala.slick.util.SQLBuilder.Result
   }
 }*/
 
+/*case class HashtagMsg(hashtag: Hashtag)
+case class CreateHashtag(hashtag: NewHashtag)
+case class ReadHashtag(id: Int)
+case class UpdateHashtag(hashtag: Hashtag)
+case class DeleteHashtag(hashtag: Hashtag)
+
+class DbActor extends Actor with ActorLogging {
+  def receive = {
+    case Hashtag => {
+      print("CASE HASHTAG: ")
+      //log.info(Hashtag.toString)
+      println(Hashtag.toString)
+    }
+    case HashtagMsg(hashtag) => {
+      print("CASE HASHTAGMSG: ")
+      println("2. " + hashtag.toString)
+    }
+    case _ => {
+      println("NOT A HASHTAG")
+    }
+  }
+}
+
+class HashtagActor extends Actor with ActorLogging {
+  var iDao = new DefaultIgLinksDAO
+  var hDao = new DefaultHashtagsDAO
+  var bDao = new DefaultBannedUsersDAO
+  def receive = {
+    case CreateHashtag(hashtag) =>
+      println("Creating hashtag: " + hashtag.toString)
+      hDao.createNewHashtag(hashtag)
+    case ReadHashtag(id) =>
+      val hashtag = hDao.getHashtagById(id)
+      println("Reading hashtag: " + hashtag.toString)
+    case UpdateHashtag(hashtag) =>
+      println("Updating hashtag: " + hashtag.toString)
+      hDao.updateHashtagById(hashtag)
+    case DeleteHashtag(hashtag) =>
+      println("Deleting hashtag: " + hashtag.toString)
+      hDao.deleteHashtag(hashtag)
+    case _ =>
+      println("UNKNOWN MESSAGE")
+  }
+}*/
 
 object ServiceBootstrap extends App {
 
   println("Hello, world!")
 
-  /*import akka.pattern.{ ask, pipe }
+  import akka.pattern.{ ask, pipe }
 
-  // Creating actor system
-  val system = ActorSystem("MySystem")
-  val myActor = system.actorOf(Props[MyActor], name = "myactor")
-
-  val dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")*/
+  //val dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")
 
 
   /*val f: Future[Hashtag] =
@@ -70,11 +110,22 @@ object ServiceBootstrap extends App {
   //println(hDao.getHashtagById(1).toString)
   //println(hDao.getHashtagByHashtag("jarjarbinks").toString)
 
-  //var hashtag1 = hDao.getHashtagByHashtag("allbran")
+  var hashtag1 = hDao.getHashtagByHashtag("allbran")
   //var hashtag2 = hDao.getHashtagById(13)
   //var igLink1 = new NewInstagramLink("https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, false, currentTimestamp)
   //var igLink2 = new NewInstagramLink("https://instagram.com/p/4W6rbwlysz/", hashtag1, "myfitnesspal", new java.sql.Timestamp(1435256229), "approved", "admin1", currentTimestamp, false, currentTimestamp)
   //var igLink3 = new NewInstagramLink("https://instagram.com/p/testtestte/", hashtag1, "kazzypops88", new java.sql.Timestamp(1435256333), "approved", "admin1", currentTimestamp, true, currentTimestamp)
+
+
+  // Creating actor system
+  //val system = ActorSystem("MySystem")
+  //val dbActor = system.actorOf(Props(new DbActor), name = "dbActor")
+  //dbActor ! hashtag1
+  //dbActor ! new HashtagMsg(hashtag1)
+
+  //val hashtagActor = system.actorOf(Props(new HashtagActor), name = "hashtagActor")
+  //hashtagActor ! new CreateHashtag(new NewHashtag("Rattatouie", "admin3", currentTimestamp))
+
 
   //iDao.createNewIgLink(igLink1)
   //iDao.createNewIgLink(igLink2)
