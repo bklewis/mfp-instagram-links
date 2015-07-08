@@ -1,12 +1,48 @@
 package mfp.platform.services.instagramlinks
 
+import java.text.SimpleDateFormat
+
+import akka.event.Logging
 import mfp.platform.db.{DbConfig, PooledDatabaseProvider}
+import akka.actor._
 import java.sql.Timestamp
+
+import scala.concurrent.Future
+import scala.slick.util.SQLBuilder.Result
+
+/*class MyActor extends Actor {
+  val log = Logging(context.system, this)
+  def receive = {
+    case "test" => log.info("received test")
+    case _ => log.info("received unknown message")
+  }
+}*/
 
 
 object ServiceBootstrap extends App {
 
   println("Hello, world!")
+
+  /*import akka.pattern.{ ask, pipe }
+
+  // Creating actor system
+  val system = ActorSystem("MySystem")
+  val myActor = system.actorOf(Props[MyActor], name = "myactor")
+
+  val dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS")*/
+
+
+  /*val f: Future[Hashtag] =
+    for {
+      id <- ask(myActor, InstagramLink).mapTo[Int]
+      hashtag <- ask(myActor, InstagramLink).mapTo[String]
+      adminUsername <- ask(myActor, InstagramLink).mapTo[String]
+      createdAt <- ask(myActor, InstagramLink).mapTo[String]
+      updatedAt <- ask(myActor, InstagramLink).mapTo[String]
+    } yield Hashtag(id, hashtag, adminUsername, new java.sql.Timestamp(dateFormat.parse(createdAt).getTime()), new Timestamp(dateFormat.parse(updatedAt).getTime()))*/
+
+
+
 
   val dbProvider = new DefaultDatabases with PooledDatabaseProvider with DbConfig
   //Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb")
