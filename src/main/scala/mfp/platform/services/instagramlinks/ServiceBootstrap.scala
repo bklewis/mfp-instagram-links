@@ -3,7 +3,8 @@ package mfp.platform.services.instagramlinks
 import java.text.SimpleDateFormat
 
 import akka.event.Logging
-import mfp.platform.db.{DbConfig, PooledDatabaseProvider}
+import mfp.platform.db.DbActor.DbResponse
+import mfp.platform.db.{DbActor, DbConfig, PooledDatabaseProvider}
 import akka.actor._
 import java.sql.Timestamp
 
@@ -65,6 +66,12 @@ class HashtagActor extends Actor with ActorLogging {
 
 object ServiceBootstrap extends App {
 
+  class ResponseHandler extends Actor {
+    override def receive = {
+      case r: DbResponse => println(r.result.toString)
+    }
+  }
+
   println("Hello, world!")
 
   import akka.pattern.{ ask, pipe }
@@ -84,19 +91,19 @@ object ServiceBootstrap extends App {
 
 
 
-  val dbProvider = new DefaultDatabases with PooledDatabaseProvider with DbConfig
+  val databases = new DefaultDatabases with PooledDatabaseProvider with DbConfig
   //Database.forURL("jdbc:mysql://localhost:8889/ig_links", user = "blewis", password = "testdb")
 
-  implicit val db = dbProvider.igLinksDb
-
-  var iDao = new DefaultIgLinksDAO
-  var hDao = new DefaultHashtagsDAO
-  var bDao = new DefaultBannedUsersDAO
-
+  val db = databases.igLinksDb
+//
+//  var iDao = new DefaultIgLinksDAO
+//  var hDao = new DefaultHashtagsDAO
+//  var bDao = new DefaultBannedUsersDAO
+//
   var currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis())
-
-  var count = iDao.countAllIgLinks
-  println(count)
+//
+//  var count = iDao.countAllIgLinks
+//  println(count)
 
   //var hashtag1 = new NewHashtag("", "admin1", currentTimestamp)
   //hDao.createNewHashtag(hashtag1)
@@ -110,7 +117,22 @@ object ServiceBootstrap extends App {
   //println(hDao.getHashtagById(1).toString)
   //println(hDao.getHashtagByHashtag("jarjarbinks").toString)
 
-  var hashtag1 = hDao.getHashtagByHashtag("allbran")
+  val system = ActorSystem("foo")
+
+  sys.addShutdownHook(system.shutdown())
+
+
+  val dbActor = system.actorOf(Props[DbActor], "db-actor")
+  val rh = system.actorOf(Props[ResponseHandler])
+  val dbOperations = new DefaultHashtagsDbOperations(databases = databases, dbActor = dbActor)
+
+  dbOperations.countAllHashtags(rh)
+  dbOperations.createHashtag(new NewHashtag("Studmuffin", "admin3", currentTimestamp), rh)
+
+  Thread.sleep(10000L)
+
+
+
   //var hashtag2 = hDao.getHashtagById(13)
   //var igLink1 = new NewInstagramLink("https://instagram.com/p/4XIdsCGqq6/", hashtag1, "josiemurs", new java.sql.Timestamp(1435255295), "banned", "admin1", currentTimestamp, false, currentTimestamp)
   //var igLink2 = new NewInstagramLink("https://instagram.com/p/4W6rbwlysz/", hashtag1, "myfitnesspal", new java.sql.Timestamp(1435256229), "approved", "admin1", currentTimestamp, false, currentTimestamp)
