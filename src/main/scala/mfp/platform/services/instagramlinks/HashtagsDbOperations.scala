@@ -22,28 +22,22 @@ trait HashtagsDbOperations {
       (Q.u + "INSERT INTO " + table + " (" + columnsCreate + ") VALUES ("
         +? hashtag.hashtag.toLowerCase + ","
         +? hashtag.adminUsername + ","
-        +? new java.sql.Timestamp(hashtag.updatedAt.getTime).toString +")").execute
-
-      /*Q.update[(String, String, String)](
-        "INSERT INTO " + table + " (" + columnsCreate + ") VALUES (?,?,?)").first(
-          hashtag.hashtag.toLowerCase,
-          hashtag.adminUsername,
-          new java.sql.Timestamp(hashtag.updatedAt.getTime).toString)*/
+        +? new java.sql.Timestamp(System.currentTimeMillis()).toString +")").execute
     })
 
   protected def updateHashtagAction(hashtag: Hashtag) =
     DbAction[Unit](implicit session => {
       implicit val rowMap = hashtagResults
-      Q.update[(String, String, Int)](
-        "UPDATE " + table + " SET admin_username=?, updated_at=? WHERE id=?").first(
-          hashtag.adminUsername,
-          new java.sql.Timestamp(hashtag.updatedAt.getTime).toString,
-          hashtag.id)
+      (Q.u + "UPDATE " + table
+        + " SET admin_username=" +? hashtag.adminUsername
+        + ", updated_at=" +? new java.sql.Timestamp(System.currentTimeMillis()).toString
+        + " WHERE id=" +? hashtag.id).execute
     })
 
   protected def getAllHashtagsAction =
     DbAction[Seq[Hashtag]](implicit session => {
       implicit val rowMap = hashtagResults
+      //(Q.u + "SELECT " + columns + " FROM " + table).list
       Q.queryNA[Hashtag]("SELECT " + columns + " FROM " + table).list
     })
 
@@ -86,7 +80,6 @@ trait HashtagsDbOperations {
   def deleteHashtag(hashtag: Hashtag, replyTo: ActorRef): Unit
 
   def countAllHashtags(replyTo: ActorRef): Unit
-
 
   //def deleteHashtagById(id: Int)(implicit db: Database): Int
 

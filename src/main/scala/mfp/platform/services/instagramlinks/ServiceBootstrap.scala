@@ -127,7 +127,8 @@ object ServiceBootstrap extends App {
   val dbOperations = new DefaultHashtagsDbOperations(databases = databases, dbActor = dbActor)
 
   dbOperations.countAllHashtags(rh)
-  dbOperations.createHashtag(new NewHashtag("Studmuffin", "admin3", currentTimestamp), rh)
+  //dbOperations.createHashtag(new NewHashtag("Studmuffin", "admin3", currentTimestamp), rh)
+  dbOperations.updateHashtag(new Hashtag(29, "Studmuffin", "admin4", currentTimestamp, currentTimestamp), rh)
 
   Thread.sleep(10000L)
 
