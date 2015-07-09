@@ -47,13 +47,14 @@ object ServiceBootstrap extends App {
   // Create + test banned users table operations
   val bannedUsersDbOps = new DefaultBannedUsersDbOperations(databases, dbActor)
 
-  bannedUsersDbOps.countAllBannedUsers(rh)
-  //bannedUsersDbOps.createBannedUser(new NewBannedUser("KnightOfNi", "profanity", "admin1", currentTimestamp), rh)
+  //bannedUsersDbOps.countAllBannedUsers(rh)
+  //bannedUsersDbOps.createBannedUser(new NewBannedUser("Tim", "profanity", "admin1", currentTimestamp), rh)
   //bannedUsersDbOps.createBannedUser(new NewBannedUser("Brian", "spam", "admin1", currentTimestamp), rh)
   //bannedUsersDbOps.updateBannedUser(new BannedUser(3, "KnightOfNi", "spam", "admin2", currentTimestamp, currentTimestamp), rh)
-  bannedUsersDbOps.getAllBannedUsers(rh)
-  bannedUsersDbOps.getBannedUserById(2,rh)
-  bannedUsersDbOps.getBannedUserByUsername("Brian", rh)
+  //bannedUsersDbOps.getAllBannedUsers(rh)
+  //bannedUsersDbOps.getBannedUserById(2,rh)
+  //bannedUsersDbOps.getBannedUserByUsername("Brian", rh)
+  //bannedUsersDbOps.deleteBannedUser(new BannedUser(5, "Tim", "boop", "doop", currentTimestamp, currentTimestamp), rh)
 
 
 
