@@ -4,8 +4,8 @@ import mfp.platform.db.DbActor.DbRequest
 import mfp.platform.services.UIDFactory
 import akka.actor.ActorRef
 
-class DefaultHashtagsDbOperations (val dbActor: ActorRef,
-                                   val databases: Databases) extends HashtagsDbOperations {
+class DefaultHashtagsDbOperations (val databases: Databases,
+                                   val dbActor: ActorRef) extends HashtagsDbOperations {
 
   override def createHashtag(hashtag: NewHashtag, replyTo: ActorRef) = {
     dbActor ! new DbRequest(databases.igLinksDb, createHashtagAction(hashtag),
@@ -41,6 +41,5 @@ class DefaultHashtagsDbOperations (val dbActor: ActorRef,
     dbActor ! new DbRequest(databases.igLinksDb, deleteHashtagAction(hashtag),
       Some(replyTo))
   }
-
 
 }
