@@ -56,6 +56,21 @@ object ServiceBootstrap extends App {
   //bannedUsersDbOps.getBannedUserByUsername("Brian", rh)
   //bannedUsersDbOps.deleteBannedUser(new BannedUser(5, "Tim", "boop", "doop", currentTimestamp, currentTimestamp), rh)
 
+  // Create + test banned users table operations
+  val igLinksDbOps = new DefaultInstagramLinksDbOperations(databases, dbActor)
+
+  //igLinksDbOps.countAllIgLinks(rh)
+  //igLinksDbOps.countBannedIgLinksByHashtag("allbran", rh)
+  val hDao = new DefaultHashtagsDAO
+  //val hashtag = hDao.getHashtagByHashtag("treebeard")
+
+  igLinksDbOps.countIgLinksByHashtag("jarjarbinks", rh)
+  //igLinksDbOps.createIgLink(new NewInstagramLink("https://instagram.com/p/123456", hashtag, "princess", null, "approved", "admin3", currentTimestamp, false, currentTimestamp), rh)
+  //igLinksDbOps.getAllIgLinks(rh)
+  //igLinksDbOps.getIgLinkById(33, rh)
+  //igLinksDbOps.getIgLinksByHashtagAll("allbran", rh)
+  //igLinksDbOps.getIgLinksByHashtagBanned("allbran", rh)
+  //igLinksDbOps.getIgLinksByHashtagApproved("allbran", rh)
 
 
   Thread.sleep(10000L)
