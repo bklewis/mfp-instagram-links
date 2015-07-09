@@ -29,8 +29,8 @@ trait BannedUsersDbOperations {
       (Q.u + "UPDATE " + table
         + " SET ig_username=" +? user.igUsername
         + ", ban_reason=" +? user.banReason
-        + ", admin_username=" + user.adminUsername
-        + ", updated_at?" +? new java.sql.Timestamp(System.currentTimeMillis()).toString
+        + ", admin_username=" +? user.adminUsername
+        + ", updated_at=" +? new java.sql.Timestamp(System.currentTimeMillis()).toString
         + " WHERE id=" +? user.id).execute
     })
 
