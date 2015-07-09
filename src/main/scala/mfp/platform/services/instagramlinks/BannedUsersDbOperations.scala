@@ -54,7 +54,6 @@ trait BannedUsersDbOperations {
 
   //Deleting a banned user unbans them
   protected def deleteBannedUserAction(user: BannedUser) =
-  //iDao.deleteIgLinksByHashtagId(hashtag.id)
     DbAction[Unit](implicit session => {
       //Q.update[Int, Int]("DELETE FROM " + table + " WHERE id=?").(hashtag.id)
       (Q.u + "DELETE FROM " + table + " WHERE id=" +? user.id).execute
