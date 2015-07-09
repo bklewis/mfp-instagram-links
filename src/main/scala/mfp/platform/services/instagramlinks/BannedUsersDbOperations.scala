@@ -2,8 +2,6 @@ package mfp.platform.services.instagramlinks
 
 import akka.actor.ActorRef
 import mfp.platform.db.DbAction
-
-import scala.slick.driver.JdbcDriver.backend.Database
 import slick.jdbc.{StaticQuery => Q, GetResult}
 
 
@@ -22,7 +20,7 @@ trait BannedUsersDbOperations {
         +? user.igUsername + ","
         +? user.banReason + ","
         +? user.adminUsername + ","
-        +? new java.sql.Timestamp(user.updatedAt.getTime).toString +")").execute
+        +? new java.sql.Timestamp(System.currentTimeMillis()).toString +")").execute
     })
 
   protected def updateBannedUserAction(user: BannedUser) =
@@ -32,7 +30,7 @@ trait BannedUsersDbOperations {
         + " SET ig_username=" +? user.igUsername
         + ", ban_reason=" +? user.banReason
         + ", admin_username=" + user.adminUsername
-        + ", updated_at?" +? new java.sql.Timestamp(user.updatedAt.getTime).toString
+        + ", updated_at?" +? new java.sql.Timestamp(System.currentTimeMillis()).toString
         + " WHERE id=" +? user.id).execute
     })
 

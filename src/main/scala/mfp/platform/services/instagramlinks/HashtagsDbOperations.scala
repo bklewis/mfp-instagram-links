@@ -1,10 +1,9 @@
 package mfp.platform.services.instagramlinks
 
-import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import mfp.platform.db.DbAction
-//import mfp.platform.services.instagramlinks.UserActivityActor.{Food, UserFoodEntry}
 import akka.actor.ActorRef
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+
 
 trait HashtagsDbOperations {
 
@@ -56,7 +55,6 @@ trait HashtagsDbOperations {
   protected def deleteHashtagAction(hashtag: Hashtag) =
     //iDao.deleteIgLinksByHashtagId(hashtag.id)
     DbAction[Unit](implicit session => {
-      //Q.update[Int, Int]("DELETE FROM " + table + " WHERE id=?").(hashtag.id)
       (Q.u + "DELETE FROM " + table + " WHERE id=" +? hashtag.id).execute
     })
 
@@ -66,7 +64,6 @@ trait HashtagsDbOperations {
     })
   
 
-    
   def createHashtag(hashtag: NewHashtag, replyTo: ActorRef): Unit
 
   def updateHashtag(hashtag: Hashtag, replyTo: ActorRef): Unit
@@ -80,7 +77,5 @@ trait HashtagsDbOperations {
   def deleteHashtag(hashtag: Hashtag, replyTo: ActorRef): Unit
 
   def countAllHashtags(replyTo: ActorRef): Unit
-
-  //def deleteHashtagById(id: Int)(implicit db: Database): Int
 
 }
