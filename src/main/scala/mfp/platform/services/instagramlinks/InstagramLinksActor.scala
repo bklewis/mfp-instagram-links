@@ -6,7 +6,7 @@ import mfp.platform.services.metrics.ActorMetrics
 
 
 class InstagramLinksActor(uidGenerator: UIDFactory,
-                          dbOperations: InstagramLinksDbOperations,
+                          dbOperations: DbOperations,
                           httpClient: ActorRef) extends Actor with ActorLogging with ActorMetrics {
 
   //instagram-links

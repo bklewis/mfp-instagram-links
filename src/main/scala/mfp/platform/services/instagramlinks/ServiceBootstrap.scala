@@ -33,9 +33,9 @@ object ServiceBootstrap extends App {
   val rh = system.actorOf(Props[ResponseHandler])
 
   // Create + test hashtags table operations
-  val igLinksDbOps = new DefaultInstagramLinksDbOperations(databases, dbActor)
-  val hashtagsDbOps = new DefaultHashtagsDbOperations(databases, dbActor)
-  val bannedUsersDbOps = new DefaultBannedUsersDbOperations(databases, dbActor)
+  //val igLinksDbOps = new DefaultInstagramLinksDbOperations(databases, dbActor)
+  //val hashtagsDbOps = new DefaultHashtagsDbOperations(databases, dbActor)
+  //val bannedUsersDbOps = new DefaultBannedUsersDbOperations(databases, dbActor)
 
   //hashtagsDbOps.countAllHashtags(rh)
   //hashtagsDbOps.createHashtag(new NewHashtag("tREeBeaRd", "admin3", currentTimestamp), rh)
@@ -63,7 +63,7 @@ object ServiceBootstrap extends App {
   //igLinksDbOps.countBannedIgLinksByHashtag("allbran", rh)
   //val hashtag = hDao.getHashtagByHashtag("treebeard")
 
-  igLinksDbOps.countIgLinksByHashtag("jarjarbinks", rh)
+  //igLinksDbOps.countIgLinksByHashtag("jarjarbinks", rh)
   //igLinksDbOps.createIgLink(new NewInstagramLink("https://instagram.com/p/123456", hashtag, "princess", null, "approved", "admin3", currentTimestamp, false, currentTimestamp), rh)
   //igLinksDbOps.getAllIgLinks(rh)
   //igLinksDbOps.getIgLinkById(33, rh)

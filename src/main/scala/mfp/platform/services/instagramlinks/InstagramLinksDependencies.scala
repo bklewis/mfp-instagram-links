@@ -16,7 +16,7 @@ trait InstagramLinksDependencies {
 
   def IgLinksActor: ActorRef
 
-  def IgLinksDbOps: InstagramLinksDbOperations
+  def IgLinksDbOps: DbOperations
 
   val uidGenerator = new UIDFactory()
 
