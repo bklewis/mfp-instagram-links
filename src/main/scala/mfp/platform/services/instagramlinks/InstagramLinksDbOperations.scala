@@ -17,12 +17,12 @@ trait InstagramLinksDbOperations {
   val igLinksResult = GetResult(r => InstagramLink(r.<<, r.<<, new Hashtag(r.<<, r.<<, r.<<, r.<<, r.<<), r.<<, new java.sql.Timestamp(r.<<), r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<), r.<<, r.<<))
 
 
-  protected def createIgLinkAction(igLink: NewInstagramLink) =
+  protected def createIgLinkAction(igLink: NewInstagramLink, hashtag: Hashtag) =
     DbAction[Unit](implicit session => {
       implicit val rowMap = igLinksResult
       (Q.u + "INSERT INTO " + table + " (" + columnsCreate + ") VALUES ("
         +? igLink.url + ","
-        +? igLink.hashtag.id + ","
+        +? hashtag + ","
         +? igLink.igUsername + ","
         +? new java.sql.Timestamp(igLink.igPostdate.getTime).toString + ","
         +? igLink.status + ","
@@ -89,7 +89,7 @@ trait InstagramLinksDbOperations {
     })
 
   // Delete all links associated with a hashtag (id), to be used to create a cascading delete when a hashtag is deleted
-  protected def deleteIgLinksByHashtagIdAction(hashtagId: Int) =
+  def deleteIgLinksByHashtagIdAction(hashtagId: Int) =
     DbAction[Unit](implicit session => {
       (Q.u + "DELETE FROM " + table + " WHERE hashtag_id=" +? hashtagId).execute
     })

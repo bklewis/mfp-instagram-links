@@ -3,9 +3,11 @@ package mfp.platform.services.instagramlinks
 import mfp.platform.db.DbActor.DbRequest
 import mfp.platform.services.UIDFactory
 import akka.actor.ActorRef
+import mfp.platform.services.instagramlinks.DefaultInstagramLinksDbOperations
 
-class DefaultHashtagsDbOperations (val databases: Databases,
-                                   val dbActor: ActorRef) extends HashtagsDbOperations {
+class DefaultHashtagsDbOperations ( val databases: Databases,
+                                    val dbActor: ActorRef,
+                                    igLinksOps: => DefaultInstagramLinksDbOperations) extends HashtagsDbOperations{
 
   override def createHashtag(hashtag: NewHashtag, replyTo: ActorRef) = {
     dbActor ! new DbRequest(databases.igLinksDb, createHashtagAction(hashtag),
@@ -39,6 +41,11 @@ class DefaultHashtagsDbOperations (val databases: Databases,
 
   override def deleteHashtag(hashtag: Hashtag, replyTo: ActorRef) = {
     dbActor ! new DbRequest(databases.igLinksDb, deleteHashtagAction(hashtag),
+      Some(replyTo))
+  }
+
+  def deleteHashtagCascade(hashtag: Hashtag, replyTo: ActorRef) = {
+    dbActor ! new DbRequest(databases.igLinksDb, deleteHashtagAction(hashtag).map(_ => igLinksOps.deleteIgLinksByHashtagIdAction(hashtag.id)),
       Some(replyTo))
   }
 

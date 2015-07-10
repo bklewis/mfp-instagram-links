@@ -46,7 +46,7 @@ trait HashtagsDbOperations {
       Q.query[(Int), Hashtag]("SELECT " + columns + " FROM " + table + " where id = ?").first(id)
     })
 
-  protected def getHashtagByHashtagAction(hashtag: String) =
+  def getHashtagByHashtagAction(hashtag: String) =
     DbAction[Hashtag](implicit session => {
       implicit val rowMap = hashtagResults
       Q.query[(String), Hashtag]("SELECT " + columns + " FROM " + table + " where hashtag = ?").first(hashtag.toLowerCase)

@@ -33,7 +33,9 @@ object ServiceBootstrap extends App {
   val rh = system.actorOf(Props[ResponseHandler])
 
   // Create + test hashtags table operations
-  val hashtagsDbOps = new DefaultHashtagsDbOperations(databases, dbActor)
+  val igLinksDbOps = new DefaultInstagramLinksDbOperations(databases, hashtagsDbOps dbActor)
+  val hashtagsDbOps = new DefaultHashtagsDbOperations(databases, dbActor, igLinksDbOps)
+  val bannedUsersDbOps = new DefaultBannedUsersDbOperations(databases, dbActor)
 
   //hashtagsDbOps.countAllHashtags(rh)
   //hashtagsDbOps.createHashtag(new NewHashtag("tREeBeaRd", "admin3", currentTimestamp), rh)
@@ -45,7 +47,6 @@ object ServiceBootstrap extends App {
   //hashtagsDbOps.deleteHashtag(new Hashtag(16, "lionstigersbearsohmy", "admin1", currentTimestamp, currentTimestamp), rh)
 
   // Create + test banned users table operations
-  val bannedUsersDbOps = new DefaultBannedUsersDbOperations(databases, dbActor)
 
   //bannedUsersDbOps.countAllBannedUsers(rh)
   //bannedUsersDbOps.createBannedUser(new NewBannedUser("Tim", "profanity", "admin1", currentTimestamp), rh)
@@ -57,11 +58,9 @@ object ServiceBootstrap extends App {
   //bannedUsersDbOps.deleteBannedUser(new BannedUser(5, "Tim", "boop", "doop", currentTimestamp, currentTimestamp), rh)
 
   // Create + test banned users table operations
-  val igLinksDbOps = new DefaultInstagramLinksDbOperations(databases, dbActor)
 
   //igLinksDbOps.countAllIgLinks(rh)
   //igLinksDbOps.countBannedIgLinksByHashtag("allbran", rh)
-  val hDao = new DefaultHashtagsDAO
   //val hashtag = hDao.getHashtagByHashtag("treebeard")
 
   igLinksDbOps.countIgLinksByHashtag("jarjarbinks", rh)
