@@ -5,17 +5,17 @@ import mfp.platform.db.DbAction
 import slick.jdbc.{StaticQuery => Q, GetResult}
 
 
-trait BannedUsersDbOperations {
+trait BannedUsersDbOperations extends DbOperations{
 
   val table = "banned_users"
   val columns = "id, ig_username, ban_reason, admin_username, created_at, updated_at"
   val columnsCreate = "ig_username, ban_reason, admin_username, updated_at"
 
-  val bannedUsersResult = GetResult(r => BannedUser(r.<<, r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
+  val getResult = GetResult(r => BannedUser(r.<<, r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
 
   protected def createBannedUserAction(user: NewBannedUser) =
     DbAction[Unit](implicit session => {
-      implicit val rowMap = bannedUsersResult
+      implicit val rowMap = getResult
       (Q.u + "INSERT INTO " + table + " (" + columnsCreate + ") VALUES ("
         +? user.igUsername + ","
         +? user.banReason + ","
@@ -25,7 +25,7 @@ trait BannedUsersDbOperations {
 
   protected def updateBannedUserAction(user: BannedUser) =
     DbAction[Unit](implicit session => {
-      implicit val rowMap = bannedUsersResult
+      implicit val rowMap = getResult
       (Q.u + "UPDATE " + table
         + " SET ig_username=" +? user.igUsername
         + ", ban_reason=" +? user.banReason
@@ -36,19 +36,19 @@ trait BannedUsersDbOperations {
 
   protected def getAllBannedUsersAction =
     DbAction[Seq[BannedUser]](implicit session => {
-      implicit val rowMap = bannedUsersResult
+      implicit val rowMap = getResult
       Q.queryNA[BannedUser]("SELECT " + columns + " FROM " + table).list
     })
 
   protected def getBannedUserByIdAction(id: Int) =
     DbAction[BannedUser](implicit session => {
-      implicit val rowMap = bannedUsersResult
+      implicit val rowMap = getResult
       Q.query[(Int), BannedUser]("SELECT " + columns + " FROM " + table + " WHERE id = ?").first(id)
     })
 
   protected def getBannedUserByUsernameAction(username: String) =
     DbAction[BannedUser](implicit session => {
-      implicit val rowMap = bannedUsersResult
+      implicit val rowMap = getResult
       Q.query[(String), BannedUser]("SELECT " + columns + " FROM " + table + " WHERE ig_username = ?").first(username)
     })
 

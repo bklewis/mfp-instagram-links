@@ -5,7 +5,7 @@ import mfp.platform.db.DbAction
 
 import scala.slick.jdbc.{StaticQuery => Q, GetResult}
 
-trait InstagramLinksDbOperations {
+trait InstagramLinksDbOperations extends DbOperations{
 
   val table = "ig_links"
   val columns = "id, url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
@@ -14,27 +14,28 @@ trait InstagramLinksDbOperations {
 
   val hashtagsTable = "hashtags"
 
-  val igLinksResult = GetResult(r => InstagramLink(r.<<, r.<<, new Hashtag(r.<<, r.<<, r.<<, r.<<, r.<<), r.<<, new java.sql.Timestamp(r.<<), r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<), r.<<, r.<<))
+  override val getResult = GetResult(r => InstagramLink(r.<<, r.<<, new Hashtag(r.<<, r.<<, r.<<, r.<<, r.<<), r.<<, new java.sql.Timestamp(r.<<), r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<), r.<<, r.<<))
 
 
-  protected def createIgLinkAction(igLink: NewInstagramLink, hashtag: Hashtag) =
-    DbAction[Unit](implicit session => {
-      implicit val rowMap = igLinksResult
-      (Q.u + "INSERT INTO " + table + " (" + columnsCreate + ") VALUES ("
-        +? igLink.url + ","
-        +? hashtag + ","
-        +? igLink.igUsername + ","
-        +? new java.sql.Timestamp(igLink.igPostdate.getTime).toString + ","
-        +? igLink.status + ","
-        +? igLink.adminUsername + ","
-        +? new java.sql.Timestamp(System.currentTimeMillis()).toString + ","
-        +? (if(igLink.starred) 1 else 0) + ","
-        +? new java.sql.Timestamp(igLink.starredExpiresAt.getTime).toString + ")").execute
-    })
+  //TODO: OVERRIDE
+//  protected def createIgLinkAction(igLink: NewInstagramLink, hashtag: Hashtag) =
+//    DbAction[Unit](implicit session => {
+//      implicit val rowMap = getResult
+//      (Q.u + "INSERT INTO " + table + " (" + columnsCreate + ") VALUES ("
+//        +? igLink.url + ","
+//        +? hashtag.id + ","
+//        +? igLink.igUsername + ","
+//        +? new java.sql.Timestamp(igLink.igPostdate.getTime).toString + ","
+//        +? igLink.status + ","
+//        +? igLink.adminUsername + ","
+//        +? new java.sql.Timestamp(System.currentTimeMillis()).toString + ","
+//        +? (if(igLink.starred) 1 else 0) + ","
+//        +? new java.sql.Timestamp(igLink.starredExpiresAt.getTime).toString + ")").execute
+//    })
 
   protected def updateIgLinkAction(igLink: InstagramLink) =
     DbAction[Unit](implicit session => {
-      implicit val rowMap = igLinksResult
+      implicit val rowMap = getResult
       (Q.u + "UPDATE " + table
         + " SET url=" +? igLink.url
         + ", hashtag_id=" +? igLink.hashtag.id
@@ -50,7 +51,7 @@ trait InstagramLinksDbOperations {
 
   protected def getAllIgLinksAction =
     DbAction[Seq[InstagramLink]](implicit session => {
-      implicit val rowMap = igLinksResult
+      implicit val rowMap = getResult
       Q.queryNA[InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable
         + " AS h ON i.hashtag_id = h.id").list
     })
@@ -58,7 +59,7 @@ trait InstagramLinksDbOperations {
 
   protected def getIgLinkByIdAction(id: Int) =
     DbAction[InstagramLink](implicit session => {
-      implicit val rowMap = igLinksResult
+      implicit val rowMap = getResult
       Q.query[(Int), InstagramLink]("SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable
         + " AS h ON i.hashtag_id = h.id WHERE i.id = ?").first(id)
     })
@@ -66,7 +67,7 @@ trait InstagramLinksDbOperations {
 
   protected def getIgLinksByHashtagApprovedAction(hashtag: String) =
     DbAction[Seq[InstagramLink]](implicit session => {
-      implicit val rowMap = igLinksResult
+      implicit val rowMap = getResult
       Q.query[(String), InstagramLink](
         "SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
           " WHERE h.hashtag = ? AND status = 'approved' ORDER BY i.created_at DESC").list(hashtag)
@@ -74,7 +75,7 @@ trait InstagramLinksDbOperations {
 
   protected def getIgLinksByHashtagAllAction(hashtag: String) =
     DbAction[Seq[InstagramLink]](implicit session => {
-      implicit val rowMap = igLinksResult
+      implicit val rowMap = getResult
       Q.query[String, InstagramLink] (
         "SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
         " WHERE h.hashtag = ? ORDER BY i.created_at DESC").list(hashtag)
@@ -82,17 +83,18 @@ trait InstagramLinksDbOperations {
 
   protected def getIgLinksByHashtagBannedAction(hashtag: String) =
     DbAction[Seq[InstagramLink]](implicit session => {
-      implicit val rowMap = igLinksResult
+      implicit val rowMap = getResult
       Q.query[String, InstagramLink] (
         "SELECT " + columnsAndHashtagCols + " FROM " + table + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
           " WHERE h.hashtag = ? AND status = 'banned' ORDER BY i.created_at DESC").list(hashtag)
     })
 
+  // TODO: OVERRIDE
   // Delete all links associated with a hashtag (id), to be used to create a cascading delete when a hashtag is deleted
-  def deleteIgLinksByHashtagIdAction(hashtagId: Int) =
-    DbAction[Unit](implicit session => {
-      (Q.u + "DELETE FROM " + table + " WHERE hashtag_id=" +? hashtagId).execute
-    })
+//  override protected def deleteIgLinksByHashtagIdAction(hashtagId: Int) =
+//    DbAction[Unit](implicit session => {
+//      (Q.u + "DELETE FROM " + table + " WHERE hashtag_id=" +? hashtagId).execute
+//    })
 
   // Delete individual link, to be used if url expires
   protected def deleteIgLinkAction(igLink: InstagramLink) =

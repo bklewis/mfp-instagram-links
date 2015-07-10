@@ -33,8 +33,8 @@ object ServiceBootstrap extends App {
   val rh = system.actorOf(Props[ResponseHandler])
 
   // Create + test hashtags table operations
-  val igLinksDbOps = new DefaultInstagramLinksDbOperations(databases, hashtagsDbOps dbActor)
-  val hashtagsDbOps = new DefaultHashtagsDbOperations(databases, dbActor, igLinksDbOps)
+  val igLinksDbOps = new DefaultInstagramLinksDbOperations(databases, dbActor)
+  val hashtagsDbOps = new DefaultHashtagsDbOperations(databases, dbActor)
   val bannedUsersDbOps = new DefaultBannedUsersDbOperations(databases, dbActor)
 
   //hashtagsDbOps.countAllHashtags(rh)

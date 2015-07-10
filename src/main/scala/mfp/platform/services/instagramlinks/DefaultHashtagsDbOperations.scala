@@ -6,8 +6,7 @@ import akka.actor.ActorRef
 import mfp.platform.services.instagramlinks.DefaultInstagramLinksDbOperations
 
 class DefaultHashtagsDbOperations ( val databases: Databases,
-                                    val dbActor: ActorRef,
-                                    igLinksOps: => DefaultInstagramLinksDbOperations) extends HashtagsDbOperations{
+                                    val dbActor: ActorRef ) extends HashtagsDbOperations {
 
   override def createHashtag(hashtag: NewHashtag, replyTo: ActorRef) = {
     dbActor ! new DbRequest(databases.igLinksDb, createHashtagAction(hashtag),
@@ -29,6 +28,7 @@ class DefaultHashtagsDbOperations ( val databases: Databases,
       Some(replyTo))
   }
 
+  //DO WE NEED THIS?
   override def getHashtagByHashtag(hashtag: String, replyTo: ActorRef) = {
     dbActor ! new DbRequest(databases.igLinksDb, getHashtagByHashtagAction(hashtag),
       Some(replyTo))
@@ -40,13 +40,18 @@ class DefaultHashtagsDbOperations ( val databases: Databases,
   }
 
   override def deleteHashtag(hashtag: Hashtag, replyTo: ActorRef) = {
-    dbActor ! new DbRequest(databases.igLinksDb, deleteHashtagAction(hashtag),
+    dbActor ! new DbRequest(databases.igLinksDb, deleteHashtagCascadeAction(hashtag),
       Some(replyTo))
   }
 
-  def deleteHashtagCascade(hashtag: Hashtag, replyTo: ActorRef) = {
-    dbActor ! new DbRequest(databases.igLinksDb, deleteHashtagAction(hashtag).map(_ => igLinksOps.deleteIgLinksByHashtagIdAction(hashtag.id)),
-      Some(replyTo))
-  }
+//  override def deleteHashtag(hashtag: Hashtag, replyTo: ActorRef) = {
+//    dbActor ! new DbRequest(databases.igLinksDb, deleteHashtagAction(hashtag),
+//      Some(replyTo))
+//  }
+
+//  def deleteHashtagCascade(hashtag: Hashtag, replyTo: ActorRef) = {
+//    dbActor ! new DbRequest(databases.igLinksDb, deleteHashtagCascadeAction(hashtag),
+//      Some(replyTo))
+//  }
 
 }

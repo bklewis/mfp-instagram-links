@@ -5,13 +5,12 @@ import mfp.platform.db.DbActor.DbRequest
 
 
 class DefaultInstagramLinksDbOperations (val databases: Databases,
-                                         val dbActor: ActorRef,
-                                         hashtagsDbOps: => DefaultHashtagsDbOperations ) extends InstagramLinksDbOperations {
+                                         val dbActor: ActorRef ) extends InstagramLinksDbOperations {
 
   // This function calls getHashtagByHashtag on the hashtag string from NewInstagramLink object
   // to get the corresponding Hashtag object from the database, and use it to create the new InstagramLink Object in the ig-links table
   override def createIgLink(igLink: NewInstagramLink, replyTo: ActorRef) = {
-    dbActor ! new DbRequest(databases.igLinksDb, hashtagsDbOps.getHashtagByHashtagAction(igLink.hashtag).map(hashtag => createIgLinkAction(igLink, hashtag)),
+    dbActor ! new DbRequest(databases.igLinksDb, createIgLinkAction(igLink),
       Some(replyTo))
   }
 

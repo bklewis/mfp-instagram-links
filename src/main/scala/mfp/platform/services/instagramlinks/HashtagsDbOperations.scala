@@ -5,19 +5,17 @@ import akka.actor.ActorRef
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 
 
-trait HashtagsDbOperations {
+trait HashtagsDbOperations extends DbOperations{
 
   val table = "hashtags"
   val columns = "id, hashtag, admin_username, created_at, updated_at"
   val columnsCreate = "hashtag, admin_username, updated_at"
 
-  val hashtagResults = GetResult(r => Hashtag(r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
-
-  //val iDao = new DefaultIgLinksDAO
+  override val getResult = GetResult(r => Hashtag(r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
 
   protected def createHashtagAction(hashtag: NewHashtag) =
     DbAction[Unit](implicit session => {
-      implicit val rowMap = hashtagResults
+      implicit val rowMap = getResult
       (Q.u + "INSERT INTO " + table + " (" + columnsCreate + ") VALUES ("
         +? hashtag.hashtag.toLowerCase + ","
         +? hashtag.adminUsername + ","
@@ -26,7 +24,7 @@ trait HashtagsDbOperations {
 
   protected def updateHashtagAction(hashtag: Hashtag) =
     DbAction[Unit](implicit session => {
-      implicit val rowMap = hashtagResults
+      implicit val rowMap = getResult
       (Q.u + "UPDATE " + table
         + " SET admin_username=" +? hashtag.adminUsername
         + ", updated_at=" +? new java.sql.Timestamp(System.currentTimeMillis()).toString
@@ -35,28 +33,29 @@ trait HashtagsDbOperations {
 
   protected def getAllHashtagsAction =
     DbAction[Seq[Hashtag]](implicit session => {
-      implicit val rowMap = hashtagResults
+      implicit val rowMap = getResult
       //(Q.u + "SELECT " + columns + " FROM " + table).list
       Q.queryNA[Hashtag]("SELECT " + columns + " FROM " + table).list
     })
 
   protected def getHashtagByIdAction(id: Int) =
     DbAction[Hashtag](implicit session => {
-      implicit val rowMap = hashtagResults
+      implicit val rowMap = getResult
       Q.query[(Int), Hashtag]("SELECT " + columns + " FROM " + table + " where id = ?").first(id)
     })
 
-  def getHashtagByHashtagAction(hashtag: String) =
-    DbAction[Hashtag](implicit session => {
-      implicit val rowMap = hashtagResults
-      Q.query[(String), Hashtag]("SELECT " + columns + " FROM " + table + " where hashtag = ?").first(hashtag.toLowerCase)
-    })
+  // TODO: OVERRIDE
+//  protected def getHashtagByHashtagAction(hashtag: String) =
+//    DbAction[Hashtag](implicit session => {
+//      implicit val rowMap = result
+//      Q.query[(String), Hashtag]("SELECT " + columns + " FROM " + table + " where hashtag = ?").first(hashtag.toLowerCase)
+//    })
 
-  protected def deleteHashtagAction(hashtag: Hashtag) =
-    //iDao.deleteIgLinksByHashtagId(hashtag.id)
-    DbAction[Unit](implicit session => {
-      (Q.u + "DELETE FROM " + table + " WHERE id=" +? hashtag.id).execute
-    })
+  //TODO : OVERRIDE
+//  protected def deleteHashtagAction(hashtag: Hashtag) =
+//    DbAction[Unit](implicit session => {
+//      (Q.u + "DELETE FROM " + table + " WHERE id=" +? hashtag.id).execute
+//    })
 
   def countAllHashtagsAction = 
     DbAction[Int](implicit session => {
@@ -72,6 +71,7 @@ trait HashtagsDbOperations {
 
   def getHashtagById(id: Int, replyTo: ActorRef): Unit
 
+  // Would we ever use this?
   def getHashtagByHashtag(hashtag: String, replyTo: ActorRef): Unit
 
   def deleteHashtag(hashtag: Hashtag, replyTo: ActorRef): Unit
