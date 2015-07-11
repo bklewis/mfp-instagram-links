@@ -12,8 +12,8 @@ trait DbOperations {
   // ---------- Hashtags Table ----------
 
   val hashtagsTable = "hashtags"
-  val columns = "id, hashtag, admin_username, created_at, updated_at"
-  val columnsCreate = "hashtag, admin_username, updated_at"
+  val hashtagsColumns = "id, hashtag, admin_username, created_at, updated_at"
+  val hashtagsColumnsCreate = "hashtag, admin_username, updated_at"
 
   val getHashtagsResult = GetResult(r => Hashtag(r.<<, r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<)))
 
@@ -23,7 +23,7 @@ trait DbOperations {
   val igLinksTable = "ig_links"
   val igLinksColumns = "id, url, hashtag_id, ig_username, ig_postdate, status, admin_username, created_at, updated_at, starred, starred_expires_at"
   val igLinksColumnsCreate = "url, hashtag_id, ig_username, ig_postdate, status, admin_username, updated_at, starred, starred_expires_at"
-  val igLinksAndHashtagColumns = "i.id, i.url, i.hashtag_id, h.hashtag, h.admin_username, h.created_at, h.updated_at, i.ig_username, i.ig_postdate, i.status, i.admin_username, i.created_at, i.updated_at, i.starred, i.starred_expires_at"
+  val igLinksAndHashtagsColumns = "i.id, i.url, i.hashtag_id, h.hashtag, h.admin_username, h.created_at, h.updated_at, i.ig_username, i.ig_postdate, i.status, i.admin_username, i.created_at, i.updated_at, i.starred, i.starred_expires_at"
 
   val getIgLinksResult = GetResult(r => InstagramLink(r.<<, r.<<, new Hashtag(r.<<, r.<<, r.<<, r.<<, r.<<), r.<<, new java.sql.Timestamp(r.<<), r.<<, r.<<, new java.sql.Timestamp(r.<<), new java.sql.Timestamp(r.<<), r.<<, r.<<))
 
@@ -126,7 +126,7 @@ trait DbOperations {
   protected def createHashtagAction(hashtag: NewHashtag) =
     DbAction[Unit](implicit session => {
       implicit val rowMap = getHashtagsResult
-      (Q.u + "INSERT INTO " + hashtagsTable + " (" + columnsCreate + ") VALUES ("
+      (Q.u + "INSERT INTO " + hashtagsTable + " (" + hashtagsColumnsCreate + ") VALUES ("
         +? hashtag.hashtag.toLowerCase + ","
         +? hashtag.adminUsername + ","
         +? new java.sql.Timestamp(System.currentTimeMillis()).toString +")").execute
@@ -144,20 +144,20 @@ trait DbOperations {
   protected def getAllHashtagsAction =
     DbAction[Seq[Hashtag]](implicit session => {
       implicit val rowMap = getHashtagsResult
-      Q.queryNA[Hashtag]("SELECT " + columns + " FROM " + hashtagsTable).list
+      Q.queryNA[Hashtag]("SELECT " + hashtagsColumns + " FROM " + hashtagsTable).list
     })
 
   protected def getHashtagByIdAction(id: Int) =
     DbAction[Hashtag](implicit session => {
       implicit val rowMap = getHashtagsResult
-      Q.query[(Int), Hashtag]("SELECT " + columns + " FROM " + hashtagsTable + " where id = ?").first(id)
+      Q.query[(Int), Hashtag]("SELECT " + hashtagsColumns + " FROM " + hashtagsTable + " where id = ?").first(id)
     })
 
   // TODO: NOT ACCESSIBLE
   protected def getHashtagByHashtagAction(hashtag: String) =
     DbAction[Hashtag](implicit session => {
       implicit val rowMap = getHashtagsResult
-      Q.query[(String), Hashtag]("SELECT " + columns + " FROM " + hashtagsTable + " where hashtag = ?").first(hashtag.toLowerCase)
+      Q.query[(String), Hashtag]("SELECT " + hashtagsColumns + " FROM " + hashtagsTable + " where hashtag = ?").first(hashtag.toLowerCase)
     })
 
   // TODO : NOT ACCESSIBLE
@@ -173,7 +173,8 @@ trait DbOperations {
 
   // Joint Function
   protected def deleteHashtagCascadeAction(hashtag: Hashtag) =
-    deleteHashtagAction(hashtag).map(_ => deleteIgLinksByHashtagIdAction(hashtag.id))
+    deleteIgLinksByHashtagIdAction(hashtag.id).map(_ => deleteHashtagAction(hashtag))
+    //deleteHashtagAction(hashtag).map(_ => deleteIgLinksByHashtagIdAction(hashtag.id))
 
 
 
@@ -186,7 +187,7 @@ trait DbOperations {
   protected def insertIgLinkAction(igLink: NewInstagramLink, hashtag: Hashtag) =
     DbAction[Unit](implicit session => {
       implicit val rowMap = getIgLinksResult
-      (Q.u + "INSERT INTO " + igLinksTable + " (" + columnsCreate + ") VALUES ("
+      (Q.u + "INSERT INTO " + igLinksTable + " (" + igLinksColumnsCreate + ") VALUES ("
         +? igLink.url + ","
         +? hashtag.id + ","
         +? igLink.igUsername + ","
@@ -217,14 +218,14 @@ trait DbOperations {
   protected def getAllIgLinksAction =
     DbAction[Seq[InstagramLink]](implicit session => {
       implicit val rowMap = getIgLinksResult
-      Q.queryNA[InstagramLink]("SELECT " + igLinksAndHashtagColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable
+      Q.queryNA[InstagramLink]("SELECT " + igLinksAndHashtagsColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable
         + " AS h ON i.hashtag_id = h.id").list
     })
 
   protected def getIgLinkByIdAction(id: Int) =
     DbAction[InstagramLink](implicit session => {
       implicit val rowMap = getIgLinksResult
-      Q.query[(Int), InstagramLink]("SELECT " + igLinksAndHashtagColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable
+      Q.query[(Int), InstagramLink]("SELECT " + igLinksAndHashtagsColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable
         + " AS h ON i.hashtag_id = h.id WHERE i.id = ?").first(id)
     })
 
@@ -232,7 +233,7 @@ trait DbOperations {
     DbAction[Seq[InstagramLink]](implicit session => {
       implicit val rowMap = getIgLinksResult
       Q.query[(String), InstagramLink](
-        "SELECT " + igLinksAndHashtagColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
+        "SELECT " + igLinksAndHashtagsColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
           " WHERE h.hashtag = ? AND status = 'approved' ORDER BY i.created_at DESC").list(hashtag)
     })
 
@@ -240,7 +241,7 @@ trait DbOperations {
     DbAction[Seq[InstagramLink]](implicit session => {
       implicit val rowMap = getIgLinksResult
       Q.query[String, InstagramLink] (
-        "SELECT " + igLinksAndHashtagColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
+        "SELECT " + igLinksAndHashtagsColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
           " WHERE h.hashtag = ? ORDER BY i.created_at DESC").list(hashtag)
     })
 
@@ -248,7 +249,7 @@ trait DbOperations {
     DbAction[Seq[InstagramLink]](implicit session => {
       implicit val rowMap = getIgLinksResult
       Q.query[String, InstagramLink] (
-        "SELECT " + igLinksAndHashtagColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
+        "SELECT " + igLinksAndHashtagsColumns + " FROM " + igLinksTable + " AS i INNER JOIN " + hashtagsTable + " AS h ON i.hashtag_id = h.id" +
           " WHERE h.hashtag = ? AND status = 'banned' ORDER BY i.created_at DESC").list(hashtag)
     })
 
@@ -288,7 +289,7 @@ trait DbOperations {
   protected def createBannedUserAction(user: NewBannedUser) =
     DbAction[Unit](implicit session => {
       implicit val rowMap = getBannedUsersResult
-      (Q.u + "INSERT INTO " + bannedUsersTable + " (" + columnsCreate + ") VALUES ("
+      (Q.u + "INSERT INTO " + bannedUsersTable + " (" + bannedUsersColumnsCreate + ") VALUES ("
         +? user.igUsername + ","
         +? user.banReason + ","
         +? user.adminUsername + ","
@@ -309,19 +310,19 @@ trait DbOperations {
   protected def getAllBannedUsersAction =
     DbAction[Seq[BannedUser]](implicit session => {
       implicit val rowMap = getBannedUsersResult
-      Q.queryNA[BannedUser]("SELECT " + columns + " FROM " + bannedUsersTable).list
+      Q.queryNA[BannedUser]("SELECT " + bannedUsersColumns + " FROM " + bannedUsersTable).list
     })
 
   protected def getBannedUserByIdAction(id: Int) =
     DbAction[BannedUser](implicit session => {
       implicit val rowMap = getBannedUsersResult
-      Q.query[(Int), BannedUser]("SELECT " + columns + " FROM " + bannedUsersTable + " WHERE id = ?").first(id)
+      Q.query[(Int), BannedUser]("SELECT " + bannedUsersColumns + " FROM " + bannedUsersTable + " WHERE id = ?").first(id)
     })
 
   protected def getBannedUserByUsernameAction(username: String) =
     DbAction[BannedUser](implicit session => {
       implicit val rowMap = getBannedUsersResult
-      Q.query[(String), BannedUser]("SELECT " + columns + " FROM " + bannedUsersTable + " WHERE ig_username = ?").first(username)
+      Q.query[(String), BannedUser]("SELECT " + bannedUsersColumns + " FROM " + bannedUsersTable + " WHERE ig_username = ?").first(username)
     })
 
   //Deleting a banned user unbans them

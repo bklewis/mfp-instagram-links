@@ -9,7 +9,6 @@ class DefaultDbOperations (val databases: Databases,
 
   // ---------- Default Hashtags Db Operations ----------
 
-
   override def createHashtag(hashtag: NewHashtag, replyTo: ActorRef) = {
     dbActor ! new DbRequest(databases.igLinksDb, createHashtagAction(hashtag),
       Some(replyTo))

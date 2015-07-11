@@ -33,43 +33,42 @@ object ServiceBootstrap extends App {
   val rh = system.actorOf(Props[ResponseHandler])
 
   // Create + test hashtags table operations
-  //val igLinksDbOps = new DefaultInstagramLinksDbOperations(databases, dbActor)
-  //val hashtagsDbOps = new DefaultHashtagsDbOperations(databases, dbActor)
-  //val bannedUsersDbOps = new DefaultBannedUsersDbOperations(databases, dbActor)
+  val dbOps = new DefaultDbOperations(databases, dbActor)
 
-  //hashtagsDbOps.countAllHashtags(rh)
-  //hashtagsDbOps.createHashtag(new NewHashtag("tREeBeaRd", "admin3", currentTimestamp), rh)
-  //hashtagsDbOps.updateHashtag(new Hashtag(29, "Studmuffin", "admin4", currentTimestamp, currentTimestamp), rh)
-  //hashtagsDbOps.getAllHashtags(rh)
-  //hashtagsDbOps.getHashtagByHashtag("treebeard", rh)
-  //hashtagsDbOps.getHashtagById(29, rh)
-  //val hashtag = hashtagsDbOps.getHashtagByHashtag("lionstigersbearsohmy")
-  //hashtagsDbOps.deleteHashtag(new Hashtag(16, "lionstigersbearsohmy", "admin1", currentTimestamp, currentTimestamp), rh)
-
-  // Create + test banned users table operations
-
-  //bannedUsersDbOps.countAllBannedUsers(rh)
-  //bannedUsersDbOps.createBannedUser(new NewBannedUser("Tim", "profanity", "admin1", currentTimestamp), rh)
-  //bannedUsersDbOps.createBannedUser(new NewBannedUser("Brian", "spam", "admin1", currentTimestamp), rh)
-  //bannedUsersDbOps.updateBannedUser(new BannedUser(3, "KnightOfNi", "spam", "admin2", currentTimestamp, currentTimestamp), rh)
-  //bannedUsersDbOps.getAllBannedUsers(rh)
-  //bannedUsersDbOps.getBannedUserById(2,rh)
-  //bannedUsersDbOps.getBannedUserByUsername("Brian", rh)
-  //bannedUsersDbOps.deleteBannedUser(new BannedUser(5, "Tim", "boop", "doop", currentTimestamp, currentTimestamp), rh)
+  //dbOps.countAllHashtags(rh)
+  //dbOps.createHashtag(new NewHashtag("tREeBeaRd", "admin3", currentTimestamp), rh)
+  //dbOps.createHashtag(new NewHashtag("klingonpower", "admin3", currentTimestamp), rh)
+  //dbOps.updateHashtag(new Hashtag(29, "Studmuffin", "admin5", currentTimestamp, currentTimestamp), rh)
+  //dbOps.getAllHashtags(rh)
+  //dbOps.getHashtagByHashtag("treebeard", rh)
+  //dbOps.getHashtagById(29, rh)
+  //val hashtag = dbOps.getHashtagByHashtag("klingonpower", rh)
+  dbOps.deleteHashtag(new Hashtag(15, "klingonpower", "admin3", currentTimestamp, currentTimestamp), rh)
 
   // Create + test banned users table operations
 
-  //igLinksDbOps.countAllIgLinks(rh)
-  //igLinksDbOps.countBannedIgLinksByHashtag("allbran", rh)
-  //val hashtag = hDao.getHashtagByHashtag("treebeard")
+  //dbOps.countAllBannedUsers(rh)
+  //dbOps.createBannedUser(new NewBannedUser("Tim", "profanity", "admin1", currentTimestamp), rh)
+  //dbOps.createBannedUser(new NewBannedUser("Brian", "spam", "admin1", currentTimestamp), rh)
+  //dbOps.updateBannedUser(new BannedUser(3, "KnightOfNi", "counterchallenge", "admin2", currentTimestamp, currentTimestamp), rh)
+  //dbOps.getAllBannedUsers(rh)
+  //dbOps.getBannedUserById(2,rh)
+  //dbOps.getBannedUserByUsername("Brian", rh)
+  //dbOps.deleteBannedUser(new BannedUser(6, "Tim", "boop", "doop", currentTimestamp, currentTimestamp), rh)
 
-  //igLinksDbOps.countIgLinksByHashtag("jarjarbinks", rh)
-  //igLinksDbOps.createIgLink(new NewInstagramLink("https://instagram.com/p/123456", hashtag, "princess", null, "approved", "admin3", currentTimestamp, false, currentTimestamp), rh)
-  //igLinksDbOps.getAllIgLinks(rh)
-  //igLinksDbOps.getIgLinkById(33, rh)
-  //igLinksDbOps.getIgLinksByHashtagAll("allbran", rh)
-  //igLinksDbOps.getIgLinksByHashtagBanned("allbran", rh)
-  //igLinksDbOps.getIgLinksByHashtagApproved("allbran", rh)
+  // Create + test banned users table operations
+
+  //dbOps.countAllIgLinks(rh)
+  //dbOps.countBannedIgLinksByHashtag("allbran", rh)
+  //val hashtag = dbOps.getHashtagByHashtag("treebeard", rh)
+
+  //dbOps.countIgLinksByHashtag("jarjarbinks", rh)
+  //dbOps.createIgLink(new NewInstagramLink("https://instagram.com/p/123456", "jarjarbinks", "princess", null, "approved", "admin3", currentTimestamp, false, currentTimestamp), rh)
+  //dbOps.getAllIgLinks(rh)
+  //dbOps.getIgLinkById(33, rh)
+  //dbOps.getIgLinksByHashtagAll("allbran", rh)
+  //dbOps.getIgLinksByHashtagBanned("allbran", rh)
+  //dbOps.getIgLinksByHashtagApproved("allbran", rh)
 
 
   Thread.sleep(10000L)
