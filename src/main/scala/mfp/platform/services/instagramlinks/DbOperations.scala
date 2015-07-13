@@ -153,7 +153,7 @@ trait DbOperations {
       Q.query[(Int), Hashtag]("SELECT " + hashtagsColumns + " FROM " + hashtagsTable + " where id = ?").first(id)
     })
 
-  // TODO: NOT ACCESSIBLE
+  // TODO : NOT ACCESSIBLE
   protected def getHashtagByHashtagAction(hashtag: String) =
     DbAction[Hashtag](implicit session => {
       implicit val rowMap = getHashtagsResult
@@ -161,10 +161,11 @@ trait DbOperations {
     })
 
   // TODO : NOT ACCESSIBLE
-  protected def deleteHashtagAction(hashtag: Hashtag) =
+  protected def deleteHashtagAction(hashtag: Hashtag) = {
     DbAction[Unit](implicit session => {
       (Q.u + "DELETE FROM " + hashtagsTable + " WHERE id=" +? hashtag.id).execute
     })
+  }
 
   protected def countAllHashtagsAction =
     DbAction[Int](implicit session => {
@@ -173,7 +174,7 @@ trait DbOperations {
 
   // Joint Function
   protected def deleteHashtagCascadeAction(hashtag: Hashtag) =
-    deleteIgLinksByHashtagIdAction(hashtag.id).map(_ => deleteHashtagAction(hashtag))
+    deleteIgLinksByHashtagIdAction(hashtag.id).flatMap(_ => deleteHashtagAction(hashtag))
     //deleteHashtagAction(hashtag).map(_ => deleteIgLinksByHashtagIdAction(hashtag.id))
 
 
@@ -182,7 +183,7 @@ trait DbOperations {
 
   // Joint Function
   protected def createIgLinkAction(igLink: NewInstagramLink) =
-    getHashtagByHashtagAction(igLink.hashtag).map(hashtag => insertIgLinkAction(igLink, hashtag))
+    getHashtagByHashtagAction(igLink.hashtag).flatMap(hashtag => insertIgLinkAction(igLink, hashtag))
 
   protected def insertIgLinkAction(igLink: NewInstagramLink, hashtag: Hashtag) =
     DbAction[Unit](implicit session => {
